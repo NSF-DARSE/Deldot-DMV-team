@@ -6,34 +6,26 @@ is added or a matching rule changes.
 ## Goal
 
 Produce `case_predictions.csv` with one T0 row and one T1 row per candidate.
-That file is not built yet. The first stage is attaching source records to
-candidates so later features are auditable.
 
 ```text
 candidate_records.csv
         |
-        |  parse SYNGIV / SYNFAM / SYNDOB
         v
    PersonIndex (exact family, optional DOB)
         |
-        +--> address_history
-        +--> license_id_events          (uses DOB)
-        +--> vehicle_title_events       (name, then vehicle_ref)
-        +--> work_location_signals
-        +--> external_context_signals
-        +--> evidence_update_stream     (T1; name, then vehicle_ref)
-        |
+        +--> linked T0 sources + T1 stream     [stage 1]
+        |    outputs/linked/
         v
-linked tables in outputs/linked/
-        |
+   case feature table (T0 and T1)              [stage 2]
+        |    outputs/features/case_features.csv
         v
-notebooks/01_labeled_case_explorer.ipynb   <-- current review surface
-        |
+   transparent recency-vote rule               [stage 2]
+        |    outputs/baseline/case_predictions.csv
         v
-(later) feature tables -> model -> case_predictions.csv
+(later) supervised model on these features
 ```
 
-## Why linkage is its own stage
+## Stage 1 — linkage
 
 Source files have no `candidate_record_id`. Joining on raw name strings
 fails because of mixed case and truncated given names. Quietly prefix-matching
@@ -42,7 +34,7 @@ family names would also fail: `ALCV` and `ALCVD` are different people.
 The linker writes `match_rule` and `match_score` onto every row so a reviewer
 can see *why* a record was attached.
 
-## Matching rules
+### Matching rules
 
 Family name is always an exact match after uppercasing and stripping
 `SYNFAM-`. Given names may be truncated. Date of birth, when present, is a
@@ -55,26 +47,85 @@ hard filter.
 | `dob_initial` | prefix, overlap 1–2 | exact | exact | 0.88 |
 | `name_exact` | exact | exact | source has none | 0.86 |
 | `name_prefix` | prefix, overlap ≥ 3 | exact | source has none | 0.72 |
-| `vehicle_ref` | not used | not used | not used | 0.80 |
+| `vehicle_ref` | compatible name on a uniquely owned vehicle | | | 0.80 |
 | `unlinked` | no unique candidate | | | 0 |
 | `ambiguous_unassigned` | two or more survivors | | | 0 |
 
 Rejected on purpose:
 
 - Family-name prefixes (`ALCV` ↛ `ALCVD`)
-- DOB mismatch, even if the names are exact (same synthetic name can be two people)
-- 1–2 character given names when the source has no DOB (too many people share a last name)
+- DOB mismatch, even if the names are exact
+- 1–2 character given names when the source has no DOB
 
-``vehicle_ref`` is a second pass for title rows and T1 title updates.
-It only fires when:
+`vehicle_ref` only fires when the vehicle is uniquely tied to one candidate
+by a name match, the leftover family name matches that owner, and the leftover
+given name is the same person (exact or truncated).
 
-- the vehicle is already uniquely tied to one candidate by a *name* match, and
-- the leftover row's family name matches that owner, and
-- the leftover given name is the same person (exact or truncated), not a
-  different given name on the same title.
+## Stage 2 — features and rule baseline
 
-That is how a truncated `SYNGIV-N` can still attach, while another family
-member on the same vehicle is left unlinked.
+Row counts and overall DE-share do **not** separate the labels. Recency does:
+
+- `review_warranted` — Delaware address / license / title facts are newer
+- `review_not_warranted` — out-of-state facts are newer
+- `insufficient_evidence` — mixed or thin file
+
+### Recency vote
+
+For each source, compare the latest DE date to the latest non-DE date:
+
+- DE newer → `+1`
+- OOS newer → `-1`
+- missing or exact timestamp tie → `0`
+
+T1 appends `evidence_update_stream` rows into address, license, title, and
+external. Work has no T1 domain. If a case has any T1 address row, that state
+replaces the T0 open address as current.
+
+### Score
+
+```text
+de_oos_score =
+    2.0 * address_vote
+  + 2.0 * title_vote
+  + 1.5 * license_vote
+  + 1.0 * work_vote
+  + 0.5 * external_vote
+  + 1.5 if current address is DE
+  - 1.5 if current address is OOS
+```
+
+Weights follow how directly the source speaks to residency or the vehicle,
+not a fit on the 300 labels.
+
+### Class rule
+
+| Condition | Class |
+|---|---|
+| fewer than 2 sources present, or no recency votes | `insufficient_evidence` |
+| score ≥ 2.0 | `review_warranted` |
+| score ≤ -2.0 | `review_not_warranted` |
+| otherwise | `insufficient_evidence` |
+
+2.0 is one strong DE-newer source (title or address), or two weaker aligned
+signals. A current DE address alone (+1.5) is not enough.
+
+Probabilities are a softmax over distance from score centers +2.5 / 0 / -2.5.
+Thin files get an extra push toward insufficient. Priority is
+`0.75 * p_warranted + 0.25 * p_insufficient`.
+
+Every prediction carries `rule_reason`, e.g.
+`title DE-newer (+2.0); current address DE (+1.5); score=+3.5; decision=review_warranted`.
+
+### Observed on this package (development labels)
+
+| Phase | Accuracy | Macro-F1 | Mean score by true class (W / I / N) |
+|---|---:|---:|---|
+| T0 | 0.47 | 0.47 | +2.21 / -0.07 / -2.27 |
+| T1 | 0.45 | 0.45 | +2.26 / +0.02 / -1.45 |
+
+Random is ~0.33. The score axis is in the right order; a later model should
+use these features rather than replace them. About 31% of cases change class
+from T0 to T1 under the rule.
 
 ## Code map
 
@@ -82,29 +133,12 @@ member on the same vehicle is left unlinked.
 |---|---|
 | `oos_review/names.py` | Parse and compare synthetic tokens |
 | `oos_review/linker.py` | `PersonIndex`, `link_frame`, T0/T1 wrappers |
-| `oos_review/load.py` | CSV loaders |
-| `oos_review/pipeline.py` | Stage runner; writes `outputs/linked/` |
-| `oos_review/caseview.py` | Coverage table and per-case dossier |
-| `tests/` | Policy tests for the rules above |
-| `notebooks/01_labeled_case_explorer.ipynb` | Inspect labeled cases through the linker |
-
-## Observed coverage on this package
-
-These shares are after the rules above, not after forcing every row onto a
-candidate. Unlinked rows are other people in the source files.
-
-| Source | Linked | Ambiguous | Notes |
-|---|---:|---:|---|
-| address_history | 59.6% | 431 | no DOB |
-| license_id_events | 68.6% | 8 | DOB makes 1-letter givens safe |
-| vehicle_title_events | 67.2% | 453 | includes 3,599 `vehicle_ref` fills |
-| work_location_signals | 78.8% | 288 | |
-| external_context_signals | 59.6% | 453 | |
-| evidence_update_stream | 61.9% | 232 | includes 386 `vehicle_ref` fills |
-
-On the 300 labeled cases, raw linked-row counts and DE-share of address/license
-rows do **not** separate the three classes. The next stage has to use recency,
-conflicts, and source quality, not volume.
+| `oos_review/features.py` | Recency votes, current snapshot, `de_oos_score` |
+| `oos_review/baseline.py` | Rule, probabilities, priority, `rule_reason` |
+| `oos_review/evaluate.py` | Development-set accuracy / F1 / confusion |
+| `oos_review/pipeline.py` | `run_linkage`, `run_features_and_baseline`, `run_pipeline` |
+| `notebooks/01_labeled_case_explorer.ipynb` | Linkage dossiers |
+| `notebooks/02_features_and_baseline.ipynb` | Score, confusion, example reasons |
 
 ## How to run
 
@@ -112,15 +146,20 @@ conflicts, and source quality, not volume.
 python -m pytest tests
 ```
 
-From a notebook or REPL:
+```python
+from oos_review.pipeline import run_pipeline
+bundle, features, preds = run_pipeline(save=True)
+```
+
+If linkage artifacts already exist:
 
 ```python
-from oos_review.pipeline import run_linkage
-bundle = run_linkage(save=True)
+from oos_review.pipeline import run_features_and_baseline
+features, preds = run_features_and_baseline(save=True)
 ```
 
 ## Next stage
 
-Use the linked tables and the 300 development labels to define features
-(DE-tie vs out-of-state-tie, recency, conflicts, missingness) and a
-transparent rule baseline before fitting a 3-class model.
+Fit a 3-class model on the feature table with nested cross-validation on the
+300 labels. Keep this rule as the auditable baseline and as a feature
+(`de_oos_score`) in the model.

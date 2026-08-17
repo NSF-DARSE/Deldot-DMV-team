@@ -33,3 +33,23 @@ def load_t0_sources() -> dict[str, pd.DataFrame]:
 
 def load_t1_stream() -> pd.DataFrame:
     return read_csv(paths.EVIDENCE_UPDATE_STREAM)
+
+
+def load_linked_bundle(linked_dir: Path | None = None) -> dict[str, pd.DataFrame]:
+    """Read artifacts from ``outputs/linked/`` after ``run_linkage``."""
+    dest = linked_dir or paths.LINKED_DIR
+    names = [
+        "candidates",
+        "address_history",
+        "license_id_events",
+        "vehicle_title_events",
+        "work_location_signals",
+        "external_context_signals",
+        "evidence_update_stream",
+    ]
+    missing = [name for name in names if not (dest / f"{name}.csv").exists()]
+    if missing:
+        raise FileNotFoundError(
+            f"Linked tables not found in {dest}: {missing}. Run run_linkage() first."
+        )
+    return {name: read_csv(dest / f"{name}.csv") for name in names}
