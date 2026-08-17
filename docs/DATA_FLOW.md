@@ -22,7 +22,11 @@ candidate_records.csv
    transparent recency-vote rule               [stage 2]
         |    outputs/baseline/case_predictions.csv
         v
-(later) supervised model on these features
+   grouped nested-CV HGB model                 [stage 3]
+        |    outputs/model/case_predictions.csv
+        |    case_predictions.csv
+        v
+   submit case_predictions.csv
 ```
 
 ## Stage 1 — linkage
@@ -123,9 +127,41 @@ Every prediction carries `rule_reason`, e.g.
 | T0 | 0.47 | 0.47 | +2.21 / -0.07 / -2.27 |
 | T1 | 0.45 | 0.45 | +2.26 / +0.02 / -1.45 |
 
-Random is ~0.33. The score axis is in the right order; a later model should
-use these features rather than replace them. About 31% of cases change class
-from T0 to T1 under the rule.
+Random is ~0.33. The score axis is in the right order. About 31% of cases
+change class from T0 to T1 under the rule.
+
+## Stage 3 — grouped nested-CV model
+
+A shallow histogram-gradient booster is trained on the feature table,
+including `de_oos_score`. It is allowed to use interactions the additive
+score cannot (for example a DE-newer title with an out-of-state observation).
+
+Validation is grouped by `candidate_record_id` so a person's T0 row cannot
+train a model that is then tested on that same person's T1 row. Outer 5-fold
+GroupKFold is the reported number. Inner 3-fold GroupKFold selects depth,
+learning rate, leaf size, and L2. After that estimate is recorded, one model
+is fit on all 300 people and applied to all 12,000 cases.
+
+The rule is kept on every row (`rule_predicted_class`, `rule_reason`) so a
+reviewer can see whether the model agreed.
+
+### Observed nested-CV on this package
+
+| Estimator | Accuracy | Macro-F1 | Log-loss |
+|---|---:|---:|---:|
+| Recency-vote rule | 0.46 | 0.46 | 1.34 |
+| HGB (outer-fold mean) | 0.47 | 0.47 | 1.20 |
+
+The lift is real and small, which is what 300 labels should produce. T0 OOF
+accuracy is 0.50; T1 is 0.45. About 29% of cases change class from T0 to T1.
+The model agrees with the rule on 61% of all 24,000 rows.
+
+A logistic regression is fit only as an explanation table
+(`outputs/model/logistic_coefficients.csv`). Sparse state dummies are noisy
+there; `open_address_is_de` and `de_oos_score` have the expected signs.
+
+Submit `case_predictions.csv` at the package root (also copied under
+`outputs/model/`).
 
 ## Code map
 
@@ -136,9 +172,11 @@ from T0 to T1 under the rule.
 | `oos_review/features.py` | Recency votes, current snapshot, `de_oos_score` |
 | `oos_review/baseline.py` | Rule, probabilities, priority, `rule_reason` |
 | `oos_review/evaluate.py` | Development-set accuracy / F1 / confusion |
-| `oos_review/pipeline.py` | `run_linkage`, `run_features_and_baseline`, `run_pipeline` |
+| `oos_review/model.py` | Grouped nested CV, HGB fit, submission mapping |
+| `oos_review/pipeline.py` | `run_linkage`, `run_features_and_baseline`, `run_model` |
 | `notebooks/01_labeled_case_explorer.ipynb` | Linkage dossiers |
 | `notebooks/02_features_and_baseline.ipynb` | Score, confusion, example reasons |
+| `notebooks/03_model_cv.ipynb` | Nested CV vs rule, disagreements |
 
 ## How to run
 
@@ -148,18 +186,18 @@ python -m pytest tests
 
 ```python
 from oos_review.pipeline import run_pipeline
-bundle, features, preds = run_pipeline(save=True)
+bundle, features, baseline, preds, cv = run_pipeline(save=True)
 ```
 
-If linkage artifacts already exist:
+If linkage and features already exist:
 
 ```python
-from oos_review.pipeline import run_features_and_baseline
-features, preds = run_features_and_baseline(save=True)
+from oos_review.pipeline import run_model
+preds, cv = run_model(save=True)
 ```
 
-## Next stage
+## What this package does not do
 
-Fit a 3-class model on the feature table with nested cross-validation on the
-300 labels. Keep this rule as the auditable baseline and as a feature
-(`de_oos_score`) in the model.
+The model is a staff ranking aid. It is not a residency, fee, or enforcement
+determination. With 300 labels, nested-CV accuracy near 0.47 is the honest
+number; in-sample accuracy will look better and should not be quoted.

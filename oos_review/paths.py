@@ -18,6 +18,7 @@ OUTPUT_DIR = PROJECT_ROOT / "outputs"
 LINKED_DIR = OUTPUT_DIR / "linked"
 FEATURES_DIR = OUTPUT_DIR / "features"
 BASELINE_DIR = OUTPUT_DIR / "baseline"
+MODEL_DIR = OUTPUT_DIR / "model"
 
 CANDIDATE_RECORDS = DATA_T0 / "candidate_records.csv"
 ADDRESS_HISTORY = DATA_T0 / "address_history.csv"
