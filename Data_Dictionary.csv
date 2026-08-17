@@ -1,0 +1,57 @@
+phase_folder,file,column,inferred_type,description
+Data_T0,address_history.csv,source_record_id,string,Identifier for a source record within the synthetic challenge data.
+Data_T0,address_history.csv,first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,address_history.csv,last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,address_history.csv,street_address,string,Synthetic location identifier or address-related value recorded by the source.
+Data_T0,address_history.csv,state,string,State/jurisdiction code recorded by the source.
+Data_T0,address_history.csv,effective_start_date,date/datetime,Date/time value associated with this source field.
+Data_T0,address_history.csv,effective_end_date,date/datetime,Date/time value associated with this source field.
+Data_T0,address_history.csv,source_type,string,Source-system/context field in the synthetic challenge data.
+Data_T0,candidate_records.csv,candidate_record_id,string,Synthetic identifier used in the challenge dataset.
+Data_T0,candidate_records.csv,first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,candidate_records.csv,last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,candidate_records.csv,date_of_birth,date/datetime,Synthetic date-of-birth representation using the reserved SYNDOB- namespace.
+Data_T0,candidate_records.csv,observed_street_address,string,Synthetic location identifier or address-related value recorded by the source.
+Data_T0,candidate_records.csv,observed_state,string,State/jurisdiction value recorded by the source.
+Data_T0,candidate_records.csv,candidate_observed_date,date/datetime,Date/time value associated with this source field.
+Data_T0,candidate_records.csv,review_status,string,Status/category value recorded by the source.
+Data_T0,external_context_signals.csv,source_record_id,string,Identifier for a source record within the synthetic challenge data.
+Data_T0,external_context_signals.csv,first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,external_context_signals.csv,last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,external_context_signals.csv,signal_type,string,Field supplied in the synthetic challenge dataset.
+Data_T0,external_context_signals.csv,signal_state,string,State/jurisdiction value recorded by the source.
+Data_T0,external_context_signals.csv,effective_date,date/datetime,Date the recorded information becomes effective.
+Data_T0,external_context_signals.csv,evidence_quality,string,Field supplied in the synthetic challenge dataset.
+Data_T0,external_context_signals.csv,source_description,string,Source-system/context field in the synthetic challenge data.
+Data_T0,license_id_events.csv,source_record_id,string,Identifier for a source record within the synthetic challenge data.
+Data_T0,license_id_events.csv,first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,license_id_events.csv,last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,license_id_events.csv,date_of_birth,date/datetime,Synthetic date-of-birth representation using the reserved SYNDOB- namespace.
+Data_T0,license_id_events.csv,credential_state,string,State/jurisdiction value recorded by the source.
+Data_T0,license_id_events.csv,event_type,string,Type/category of the recorded event.
+Data_T0,license_id_events.csv,event_date,date/datetime,Date associated with the recorded event.
+Data_T0,license_id_events.csv,credential_status,string,Status/category value recorded by the source.
+Data_T0,vehicle_title_events.csv,source_record_id,string,Identifier for a source record within the synthetic challenge data.
+Data_T0,vehicle_title_events.csv,vehicle_ref,string,Field supplied in the synthetic challenge dataset.
+Data_T0,vehicle_title_events.csv,owner_first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,vehicle_title_events.csv,owner_last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,vehicle_title_events.csv,event_type,string,Type/category of the recorded event.
+Data_T0,vehicle_title_events.csv,event_state,string,State/jurisdiction value recorded by the source.
+Data_T0,vehicle_title_events.csv,event_date,date/datetime,Date associated with the recorded event.
+Data_T0,work_location_signals.csv,source_record_id,string,Identifier for a source record within the synthetic challenge data.
+Data_T0,work_location_signals.csv,first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,work_location_signals.csv,last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T0,work_location_signals.csv,work_state,string,State/jurisdiction value recorded by the source.
+Data_T0,work_location_signals.csv,observed_date,date/datetime,Date/time value associated with this source field.
+Data_T0,work_location_signals.csv,source_type,string,Source-system/context field in the synthetic challenge data.
+Data_T1,evidence_update_stream.csv,source_record_id,string,Identifier for a source record within the synthetic challenge data.
+Data_T1,evidence_update_stream.csv,release_batch,date/datetime,Field supplied in the synthetic challenge dataset.
+Data_T1,evidence_update_stream.csv,source_domain,string,Source-system/context field in the synthetic challenge data.
+Data_T1,evidence_update_stream.csv,record_action,string,Field supplied in the synthetic challenge dataset.
+Data_T1,evidence_update_stream.csv,first_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T1,evidence_update_stream.csv,last_name,string,Synthetic human-name representation using a reserved SYNGIV-/SYNFAM-/SYNNAME- namespace.
+Data_T1,evidence_update_stream.csv,state,string,State/jurisdiction code recorded by the source.
+Data_T1,evidence_update_stream.csv,vehicle_ref,string,Field supplied in the synthetic challenge dataset.
+Data_T1,evidence_update_stream.csv,effective_date,date/datetime,Date the recorded information becomes effective.
+Data_T1,evidence_update_stream.csv,observed_date,date/datetime,Date/time value associated with this source field.
+Data_T1,evidence_update_stream.csv,source_description,string,Source-system/context field in the synthetic challenge data.
