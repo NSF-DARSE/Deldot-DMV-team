@@ -1,0 +1,25 @@
+EVERY MODEL FAMILY ON IDENTICAL GROUPED FOLDS, 600 LABELLED ROWS
+==============================================================================
+  model                                          log loss     acc  macroF1    AUC
+------------------------------------------------------------------------------
+ 1 ordinal logistic (shipped)                       0.9073   0.554    0.556  0.741
+ 2 multinomial logistic  C=0.01                     0.9244   0.538    0.532  0.725
+ 3 multinomial logistic  C=0.005                    0.9298   0.534    0.526  0.723
+ 4 multinomial logistic  C=0.05                     0.9422   0.541    0.539  0.726
+ 5 random forest  min_leaf=5                        0.9505   0.527    0.523  0.703
+ 6 random forest  min_leaf=15                       0.9508   0.526    0.519  0.702
+ 7 random forest  min_leaf=30                       0.9601   0.521    0.509  0.695
+ 8 catboost  depth=4 n=300                          0.9635   0.510    0.508  0.705
+ 9 catboost  depth=3 n=400                          0.9715   0.508    0.507  0.701
+10 catboost  depth=2 n=600                          0.9769   0.506    0.504  0.700
+11 xgboost  depth=2 lr=0.02 n=500                   0.9828   0.507    0.504  0.695
+12 xgboost  depth=2 lr=0.05 n=250                   0.9958   0.505    0.503  0.693
+13 hist gradient boosting  depth=2                  0.9979   0.503    0.501  0.691
+14 xgboost  depth=3 lr=0.05 n=200                   1.0086   0.501    0.499  0.692
+15 xgboost  depth=2 + ORDINAL decomposition         1.0371   0.506    0.507  0.696
+16 lightgbm  leaves=4 n=300                         1.0473   0.496    0.495  0.682
+17 xgboost  depth=4 lr=0.1 n=120                    1.0575   0.496    0.495  0.686
+18 lightgbm  leaves=8 n=200                         1.0738   0.495    0.494  0.683
+19 class prior (guess the base rates)               1.0958   0.355    0.175  0.500
+20 catboost  depth=3 + ORDINAL decomposition        1.1449   0.497    0.501  0.682
+21 LLM classifier (Claude Haiku 4.5)                1.1506   0.497        -  0.659

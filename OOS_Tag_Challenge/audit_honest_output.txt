@@ -1,0 +1,12 @@
+Ordinary cross-validation (what predict.py reports):
+   chosen model               ll=0.9057 acc=0.5583 auc=0.7395 prio=0.8108
+
+Nested selection (unbiased for the whole procedure):
+   seed 0: ll=0.9120 acc=0.5433 auc=0.7359  picks: ['full/0.02', 'full/0.02', 'full/0.03', 'full/0.02', 'full/0.02']
+   seed 1: ll=0.9158 acc=0.5350 auc=0.7355  picks: ['full/0.02', 'full/0.02', 'full/0.02', 'full/0.02', 'full/0.02']
+   seed 2: ll=0.9039 acc=0.5467 auc=0.7470  picks: ['full/0.02', 'full/0.02', 'full/0.02', 'full/0.02', 'full/0.02']
+   seed 3: ll=0.9282 acc=0.5533 auc=0.7285  picks: ['full/0.02', 'base+address/0.02', 'full/0.02', 'full/0.02', 'base/0.02']
+   seed 4: ll=0.9171 acc=0.5583 auc=0.7331  picks: ['full/0.02', 'full/0.02', 'full/0.02', 'full/0.02', 'base+address/0.02']
+   seed 5: ll=0.9034 acc=0.5567 auc=0.7428  picks: ['full/0.02', 'full/0.02', 'full/0.02', 'full/0.02', 'full/0.02']
+
+   NESTED MEAN  ll=0.9134 acc=0.5489 auc=0.7371 prio=0.8085

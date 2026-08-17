@@ -1,0 +1,40 @@
+PROBE 1  Can a model that is allowed to memorise reach 90%?
+         (training accuracy, no held-out set, deliberately overfitting)
+           decision tree, unlimited depth     100.0%
+           random forest, unlimited depth     100.0%
+           1-nearest-neighbour on itself      100.0%
+         -> the features CAN separate the 300 rows when memorised, so the limit
+            is not expressive power. It is whether that pattern generalises.
+
+PROBE 2  Do near-identical cases carry the same label?
+           label agrees with its 1 nearest twin(s):  49.0%
+           label agrees with its 3 nearest twin(s):  48.6%
+           label agrees with its 5 nearest twin(s):  47.2%
+         -> cases the model literally cannot tell apart disagree ~45% of the time.
+            That disagreement is a hard floor on achievable accuracy.
+
+PROBE 3  Does the ground truth agree with itself across phases?
+           same verdict at T0 and T1 for the same candidate:  77.7%
+           i.e. the official answer changes for 22.3% of candidates after
+           just two extra records arrive.
+
+         An oracle that knew the T0 answer perfectly and had to predict T1
+         would therefore score 77.7%. That is the practical ceiling for
+         'the same case, slightly different evidence'.
+
+WHAT IS ACHIEVABLE IF THE QUESTION IS BINARY
+           warranted vs everything else        77.7%
+           not-warranted vs everything else    76.2%
+
+========================================================================
+CAVEAT CHECK on probe 2: are those 'twins' actually close?
+  distance to nearest neighbour: median 4.30, p10 3.09  (41-dim standardised space)
+  typical distance between two random cases: 8.77
+  among the CLOSEST quarter of pairs, labels agree: 54.4%
+
+========================================================================
+THE NUMBER THAT IS ACTUALLY IN THE 80s
+  when BOTH the truth and the model commit to a decided verdict
+  (i.e. ignoring the deliberately ambiguous middle class):
+      correct 239 of 270  =  88.5%
+  the model almost never flips a case end-to-end: 31 of 600 = 5.2%

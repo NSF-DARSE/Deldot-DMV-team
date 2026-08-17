@@ -1,0 +1,19 @@
+vehicles with a clean 3+1 split: 5686
+
+feed     garbled name found   recombined control
+adr                  43.3%                3.8%
+ext                  43.6%                3.9%
+lic                  31.9%                3.8%
+
+garbled name is itself a real candidate's exact name: 1.0%
+its FIRST name alone belongs to some real candidate: 63.0%
+
+==========================================================================
+DECISIVE TEST: is an alias unique to one candidate, or shared by many?
+  vehicles sharing the same garbled name: {1: 4906, 2: 337, 3: 34, 4: 1}
+  distinct aliases: 5278 across 5686 vehicles
+
+Are the alias rows the ones my matcher currently fails on?
+  aliases present in the address feed: 2462
+  address rows carrying an alias: 3454; of those, currently UNLINKED: 2507 (72.6%)
+  baseline unlinked rate across the whole address feed: 19.5%

@@ -1,0 +1,20 @@
+All 300 held-out cases, true labels: {'not worth reviewing': 105, 'cannot tell': 105, 'worth reviewing': 90}
+
+  slice of queue  cases |  worth reviewing  cannot tell  not worth it
+          top 5%     15 |      12 ( 80%)      3 ( 20%)      0 (  0%)
+         top 10%     30 |      23 ( 77%)      5 ( 17%)      2 (  7%)
+         top 20%     60 |      37 ( 62%)     15 ( 25%)      8 ( 13%)
+         top 50%    150 |      72 ( 48%)     54 ( 36%)     24 ( 16%)
+        top 100%    300 |      90 ( 30%)    105 ( 35%)    105 ( 35%)
+
+TOP 10% (30 cases) in detail:
+  truly worth reviewing : 23
+  truly cannot tell     : 5   <- still needs a human, just not a clear-cut one
+  truly not worth it    : 2   <- these are the wasted opens
+
+  'worth reviewing' only              : 23/30 = 77%
+  'worth reviewing' OR 'cannot tell'  : 28/30 = 93%  (both need a person)
+  genuinely wasted                    : 2/30 = 7%
+
+  CAVEAT: this is measured on only 30 cases. 95% interval on the 77% figure
+  is roughly 60% to 89%. The direction is solid; the exact number is not.

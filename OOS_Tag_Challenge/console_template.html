@@ -1,0 +1,357 @@
+<title>DE Tag Review Console</title>
+<style>
+  :root{
+    --paper:#EEF1F5; --surface:#FFF; --raised:#F7F9FB; --ink:#0F1620; --muted:#5A6472;
+    --rule:#D2D8E0; --plate:#0B2F5E; --plate-soft:#E2EAF4;
+    --warr:#B8860F; --warr-bg:#FBF2D9; --insuf:#5A6472; --insuf-bg:#EBEEF2;
+    --notw:#2C6A55; --notw-bg:#E1EFE9; --accent:#0B2F5E;
+    --shadow:0 1px 2px rgba(11,47,94,.07),0 6px 20px rgba(11,47,94,.06);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#080F19; --surface:#101B29; --raised:#162334; --ink:#E5EAF1; --muted:#93A0B1;
+    --rule:#243346; --plate:#8FBCEC; --plate-soft:#182942;
+    --warr:#E8BC4E; --warr-bg:#2A2210; --insuf:#93A0B1; --insuf-bg:#1A2433;
+    --notw:#5FB394; --notw-bg:#10261F; --accent:#8FBCEC;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);}}
+  :root[data-theme="dark"]{
+    --paper:#080F19; --surface:#101B29; --raised:#162334; --ink:#E5EAF1; --muted:#93A0B1;
+    --rule:#243346; --plate:#8FBCEC; --plate-soft:#182942;
+    --warr:#E8BC4E; --warr-bg:#2A2210; --insuf:#93A0B1; --insuf-bg:#1A2433;
+    --notw:#5FB394; --notw-bg:#10261F; --accent:#8FBCEC;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font:400 14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl{font:600 10px/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--muted)}
+  button{font:inherit;color:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  header{background:var(--surface);border-bottom:1px solid var(--rule);padding:14px 22px;
+    display:flex;align-items:center;gap:22px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+  h1{font:400 20px/1.2 Georgia,"New York",ui-serif,serif;color:var(--plate);margin:0;
+    white-space:nowrap}
+  .seg{display:flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+  .seg button{background:var(--surface);border:0;padding:6px 14px;font-size:13px}
+  .seg button[aria-pressed="true"]{background:var(--plate);color:var(--surface);font-weight:600}
+  input[type=search]{font:inherit;padding:6px 11px;border:1px solid var(--rule);border-radius:6px;
+    background:var(--raised);color:var(--ink);width:190px}
+  .spacer{flex:1}
+
+  .strip{display:flex;gap:0;background:var(--surface);border-bottom:1px solid var(--rule);
+    overflow-x:auto}
+  .stat{padding:11px 22px;border-right:1px solid var(--rule);white-space:nowrap}
+  .stat b{display:block;font-size:19px;font-weight:650;margin-top:3px;
+    font-variant-numeric:tabular-nums}
+  .stat.w b{color:var(--warr)} .stat.i b{color:var(--insuf)} .stat.n b{color:var(--notw)}
+
+  main{display:grid;grid-template-columns:minmax(420px,1fr) minmax(430px,1fr);
+    gap:1px;background:var(--rule);min-height:calc(100vh - 118px)}
+  @media (max-width:1000px){main{grid-template-columns:1fr}}
+  .pane{background:var(--paper);padding:18px 22px 40px;overflow:auto}
+
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  thead th{position:sticky;top:0;background:var(--paper);z-index:5;
+    font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--muted);text-align:left;padding:8px 9px;border-bottom:1.5px solid var(--plate);
+    cursor:pointer;user-select:none;white-space:nowrap}
+  thead th.num{text-align:right}
+  tbody td{padding:8px 9px;border-bottom:1px solid var(--rule);
+    font-variant-numeric:tabular-nums}
+  tbody td.num{text-align:right}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--raised)}
+  tbody tr[aria-selected="true"]{background:var(--plate-soft)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:11px;font-size:11px;font-weight:650;
+    white-space:nowrap}
+  .pill.w{background:var(--warr-bg);color:var(--warr)}
+  .pill.i{background:var(--insuf-bg);color:var(--insuf)}
+  .pill.n{background:var(--notw-bg);color:var(--notw)}
+  .bar{display:inline-block;height:5px;border-radius:3px;background:var(--warr);
+    vertical-align:middle;margin-right:6px}
+
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+    padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .card h3{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 13px}
+  .verdict{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin-bottom:4px}
+  .verdict .v{font:400 25px/1.15 Georgia,ui-serif,serif}
+  .verdict .v.w{color:var(--warr)} .verdict .v.i{color:var(--insuf)} .verdict .v.n{color:var(--notw)}
+
+  .probs{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;
+    margin-top:12px;font-size:12.5px}
+  .track{display:block;height:8px;background:var(--raised);border-radius:4px;overflow:hidden}
+  .fill{display:block;height:100%;border-radius:4px;min-width:2px}
+  .probs .p{font-variant-numeric:tabular-nums;color:var(--muted)}
+
+  .scale{position:relative;height:46px;margin:6px 0 2px}
+  .scale .seg3{position:absolute;top:14px;height:15px;border:1px solid var(--rule)}
+  .scale .mk{position:absolute;top:6px;width:2px;height:31px;background:var(--ink);
+    transition:left .18s ease}
+  .scale .mk.ghost{background:var(--muted);opacity:.45}
+  .scale .cap{position:absolute;top:32px;font-size:10.5px;color:var(--muted);
+    transform:translateX(-50%);white-space:nowrap}
+
+  .tl{display:grid;grid-template-columns:58px 1fr;gap:7px 11px;align-items:center;font-size:12.5px}
+  .tl .fd{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:11px}
+  .tl .run{display:flex;align-items:center;gap:8px}
+  .tl .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .tl .de{background:var(--notw)} .tl .oos{background:var(--warr)} .tl .na{background:var(--rule)}
+
+  .sl{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:13px}
+  .sl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px}
+  .sl .ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted)}
+  input[type=range]{width:100%;accent-color:var(--plate);margin:1px 0}
+  .delta{font-variant-numeric:tabular-nums;font-size:12px;font-weight:650}
+  .up{color:var(--warr)} .down{color:var(--notw)}
+  .rowbtn{display:flex;gap:9px;margin-top:4px}
+  .rowbtn button{background:var(--raised);border:1px solid var(--rule);border-radius:6px;
+    padding:6px 12px;font-size:12.5px}
+  .rowbtn button:hover{background:var(--plate-soft)}
+  .empty{color:var(--muted);padding:34px 4px;text-align:center}
+  .note{font-size:12px;color:var(--muted);margin:9px 0 0;line-height:1.45}
+  .gains{width:100%;height:auto;display:block;color:var(--ink)}
+</style>
+
+<header>
+  <h1>DE Tag Review Console</h1>
+  <div class="seg" role="group" aria-label="Evidence phase">
+    <button id="ph0" aria-pressed="true">T0 &middot; initial</button>
+    <button id="ph1" aria-pressed="false">T1 &middot; after updates</button>
+  </div>
+  <input type="search" id="q" placeholder="case id or state" aria-label="Search cases">
+  <div class="seg" role="group" aria-label="Filter by verdict">
+    <button id="fA" aria-pressed="true">All</button>
+    <button id="fW" aria-pressed="false">Warranted</button>
+    <button id="fI" aria-pressed="false">Unclear</button>
+    <button id="fN" aria-pressed="false">Not warranted</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="lbl" id="shown"></div>
+</header>
+
+<div class="strip" id="strip"></div>
+
+<main>
+  <div class="pane">
+    <table>
+      <thead><tr>
+        <th data-s="id">Case</th><th data-s="tag">Tag</th><th data-s="verdict">Verdict</th>
+        <th data-s="pri" class="num">Priority</th><th data-s="n" class="num">Records</th>
+        <th data-s="fresh" class="num">Newest</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="more"></div>
+  </div>
+
+  <div class="pane" id="detail"><div class="empty">Select a case from the queue.</div></div>
+</main>
+
+<script id="payload" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('payload').textContent);
+const CL = ['review_not_warranted','insufficient_evidence','review_warranted'];
+const SHORT = ['not warranted','unclear','warranted'];
+const KEY = ['n','i','w'];                        // css class suffix, low class to high
+const VAR = ['notw','insuf','warr'];              // the actual custom-property names
+const TH = D.th, GA = D.gA, GB = D.gB;
+
+const S = {phase:0, filter:-1, q:'', sort:'pri', desc:true, sel:null, whatif:null};
+
+const sig = z => 1/(1+Math.exp(-z));
+function probs(z){                                // exactly the shipped model
+  const c0 = sig(TH[0]-z), c1 = sig(TH[1]-z);
+  return [c0, c1-c0, 1-c1];
+}
+const cls = p => p.indexOf(Math.max(...p));
+const prio = p => p[2] + 0.5*p[1];
+const ph = c => c[4 + S.phase];
+const zOf = d => d[3] + GA.reduce((s,a,g)=>s + a*d[4][g] - GB[g], 0);
+
+function pool(){
+  const q = S.q.trim().toUpperCase();
+  return D.cases.filter(c=>{
+    const d = ph(c);
+    if (S.filter >= 0 && cls([1-d[0]-d[1], d[1], d[0]]) !== S.filter) return false;
+    if (q && !c[0].includes(q) && c[1] !== q) return false;
+    return true;
+  });
+}
+function verdictOf(d){ return cls([1-d[0]-d[1], d[1], d[0]]); }
+
+function renderStrip(){
+  const all = D.cases.map(ph), n = all.length;
+  const cnt = [0,0,0];
+  all.forEach(d=>cnt[verdictOf(d)]++);
+  // The two right-hand figures are measured against the 300 held-out labelled cases,
+  // not against the model's own output -- scoring a ranking by the ranking would be
+  // circular and would read as 100%.
+  document.getElementById('strip').innerHTML = `
+    <div class="stat"><span class="lbl">Cases in queue</span><b>${n.toLocaleString()}</b></div>
+    <div class="stat w"><span class="lbl">Review warranted</span><b>${cnt[2].toLocaleString()}</b></div>
+    <div class="stat i"><span class="lbl">Evidence unclear</span><b>${cnt[1].toLocaleString()}</b></div>
+    <div class="stat n"><span class="lbl">Not warranted</span><b>${cnt[0].toLocaleString()}</b></div>
+    <div class="stat" title="Measured on held-out labelled cases, not on the model's own output">
+      <span class="lbl">Top 10% hit rate &middot; held-out</span><b>77%</b></div>
+    <div class="stat" title="Against working the same queue in no particular order">
+      <span class="lbl">Lift vs unsorted &middot; held-out</span><b>2.6&times;</b></div>`;
+}
+
+function renderRows(){
+  const list = pool();
+  const get = {
+    id:c=>c[0], tag:c=>c[1], verdict:c=>verdictOf(ph(c)),
+    pri:c=>ph(c)[2], n:c=>ph(c)[5], fresh:c=>ph(c)[6]
+  }[S.sort];
+  list.sort((a,b)=>{ const x=get(a), y=get(b);
+    return (x<y?-1:x>y?1:0) * (S.desc?-1:1); });
+  const show = list.slice(0,200);
+  document.getElementById('rows').innerHTML = show.map(c=>{
+    const d = ph(c), v = verdictOf(d);
+    return `<tr data-id="${c[0]}" aria-selected="${S.sel===c[0]}">
+      <td class="mono">CAN-${c[0]}</td>
+      <td class="mono">${c[1]}</td>
+      <td><span class="pill ${KEY[v]}">${SHORT[v]}</span></td>
+      <td class="num"><span class="bar" style="width:${Math.round(d[2]*34)}px"></span>${d[2].toFixed(2)}</td>
+      <td class="num">${d[5].toFixed(0)}</td>
+      <td class="num">${d[6]<0?'&ndash;':d[6]+'d'}</td></tr>`;
+  }).join('');
+  document.getElementById('shown').textContent =
+    `${show.length} of ${list.length.toLocaleString()} shown`;
+  document.getElementById('more').textContent =
+    list.length > 200 ? `Showing the first 200 by ${S.sort}. Search to narrow further.` : '';
+}
+
+function scaleHTML(z, zGhost){
+  const lo=-3.2, hi=3.2, pct = v => Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));
+  const a=pct(TH[0]), b=pct(TH[1]);
+  const g = (zGhost!==null && Math.abs(zGhost-z)>1e-6)
+    ? `<div class="mk ghost" style="left:${pct(zGhost)}%"></div>` : '';
+  return `<div class="scale">
+    <div class="seg3" style="left:0;width:${a}%;background:var(--notw-bg);border-radius:4px 0 0 4px"></div>
+    <div class="seg3" style="left:${a}%;width:${b-a}%;background:var(--insuf-bg)"></div>
+    <div class="seg3" style="left:${b}%;width:${100-b}%;background:var(--warr-bg);border-radius:0 4px 4px 0"></div>
+    <div class="cap" style="left:${a/2}%">not warranted</div>
+    <div class="cap" style="left:${(a+b)/2}%">unclear</div>
+    <div class="cap" style="left:${(b+100)/2}%">warranted</div>
+    ${g}<div class="mk" style="left:${pct(z)}%"></div></div>`;
+}
+
+function renderDetail(){
+  const el = document.getElementById('detail');
+  if(!S.sel){ el.innerHTML = '<div class="empty">Select a case from the queue.</div>'; return; }
+  const c = D.cases.find(x=>x[0]===S.sel), d = ph(c);
+  const live = S.whatif || d[4].slice();
+  const z = d[3] + GA.reduce((s,a,g)=>s + a*live[g] - GB[g], 0);
+  const P = probs(z), v = cls(P), touched = S.whatif !== null;
+  const zActual = zOf(d);
+  const other = c[4 + (1-S.phase)], oV = verdictOf(other);
+
+  const feedRow = (f,i) => {
+    const [st,dt] = d[7][i];
+    const k = st===0 ? 'na' : (st==='DE' ? 'de' : 'oos');
+    return `<div class="fd">${f}</div><div class="run"><span class="dot ${k}"></span>
+      <span class="mono">${st===0?'no record':st}</span>
+      <span style="color:var(--muted)">${dt===0?'':'20'+dt}</span></div>`;
+  };
+  const sliders = D.groups.map(([name,lo,hi],g)=>`
+    <div class="sl">
+      <div class="top"><span>${name}</span>
+        <span class="mono" style="color:var(--muted)">${live[g].toFixed(2)}</span></div>
+      <input type="range" min="0" max="1" step="0.01" value="${live[g]}" data-g="${g}"
+             aria-label="${name}">
+      <div class="ends"><span>${lo}</span><span>${hi}</span></div>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="card">
+      <h3>Case CAN-${c[0]} &middot; ${S.phase?'T1':'T0'}</h3>
+      <div class="verdict">
+        <span class="v ${KEY[v]}">${SHORT[v]}</span>
+        <span class="lbl">priority ${prio(P).toFixed(2)}</span>
+        ${touched?'<span class="pill i">what-if</span>':''}
+      </div>
+      ${scaleHTML(z, touched ? zActual : null)}
+      <div class="probs">
+        ${[2,1,0].map(k=>`
+          <span>${SHORT[k]}</span>
+          <span class="track"><span class="fill" style="width:${(P[k]*100).toFixed(1)}%;
+            background:var(--${VAR[k]})"></span></span>
+          <span class="p">${P[k].toFixed(3)}</span>`).join('')}
+      </div>
+      ${c[3] ? `<p class="note" style="margin-top:11px;padding:8px 11px;
+        background:var(--raised);border-radius:6px">This is one of the 300 cases with a
+        known answer. Actual: <b>${SHORT[c[3][S.phase]]}</b>.
+        ${c[3][S.phase]===v?'The model agrees.':'The model does <b>not</b> agree.'}</p>` : ''}
+      <p class="note">Observed tag <b class="mono">${c[1]}</b>, seen 20${c[2]}.
+        ${d[5].toFixed(0)} records linked, newest ${d[6]<0?'unknown':d[6]+' days old'}.
+        ${S.phase? 'T1 updates point <b>'+D.upd[d[8]]+'</b>.' : ''}</p>
+    </div>
+
+    <div class="card">
+      <h3>Newest record in each feed</h3>
+      <div class="tl">${D.feeds.map(feedRow).join('')}</div>
+      <p class="note">Green is Delaware, amber is another state. This is the evidence a
+        reviewer would open first.</p>
+    </div>
+
+    <div class="card">
+      <h3>Same case at ${S.phase?'T0':'T1'}</h3>
+      <div class="verdict"><span class="v ${KEY[oV]}" style="font-size:19px">${SHORT[oV]}</span>
+        <span class="lbl">priority ${other[2].toFixed(2)}</span></div>
+      <p class="note">${oV===verdictOf(d)
+        ? 'The later evidence did not change the verdict.'
+        : 'The verdict <b>changed</b> between phases as new records arrived.'}</p>
+    </div>
+
+    <div class="card">
+      <h3>What if the evidence were different?</h3>
+      <p class="note" style="margin:0 0 14px">These sliders drive the real model, not a
+        mock-up. The whole model is ${GA.length} adjustable inputs feeding one score and two
+        thresholds, so it recomputes exactly here in the page.</p>
+      ${sliders}
+      <div class="rowbtn">
+        <button id="reset">Reset to actual evidence</button>
+        <span class="delta ${z>zActual?'up':'down'}" style="align-self:center">
+          ${touched? (z-zActual>0?'+':'')+(z-zActual).toFixed(2)+' on the score' : ''}</span>
+      </div>
+    </div>`;
+
+  el.querySelectorAll('input[type=range]').forEach(r=>{
+    r.addEventListener('input', e=>{
+      const g = +e.target.dataset.g;
+      const nv = (S.whatif || d[4].slice()); nv[g] = +e.target.value;
+      S.whatif = nv; renderDetail();
+      const f = document.querySelector(`input[data-g="${g}"]`); if(f) f.focus();
+    });
+  });
+  const rb = document.getElementById('reset');
+  if(rb) rb.onclick = ()=>{ S.whatif = null; renderDetail(); };
+}
+
+document.getElementById('rows').addEventListener('click', e=>{
+  const tr = e.target.closest('tr'); if(!tr) return;
+  S.sel = tr.dataset.id; S.whatif = null; renderRows(); renderDetail();
+});
+document.querySelectorAll('thead th').forEach(th=>th.onclick=()=>{
+  const s = th.dataset.s;
+  if(S.sort===s) S.desc=!S.desc; else {S.sort=s; S.desc=true;}
+  renderRows();
+});
+function seg(ids, on){ ids.forEach((id,i)=>
+  document.getElementById(id).setAttribute('aria-pressed', String(i===on))); }
+document.getElementById('ph0').onclick=()=>{S.phase=0;seg(['ph0','ph1'],0);S.whatif=null;
+  renderStrip();renderRows();renderDetail();};
+document.getElementById('ph1').onclick=()=>{S.phase=1;seg(['ph0','ph1'],1);S.whatif=null;
+  renderStrip();renderRows();renderDetail();};
+const fids=['fA','fW','fI','fN'], fvals=[-1,2,1,0];
+fids.forEach((id,i)=>document.getElementById(id).onclick=()=>{
+  S.filter=fvals[i]; seg(fids,i); renderRows();});
+document.getElementById('q').addEventListener('input', e=>{S.q=e.target.value; renderRows();});
+
+renderStrip(); renderRows(); renderDetail();
+</script>

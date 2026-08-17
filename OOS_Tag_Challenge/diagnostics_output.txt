@@ -1,0 +1,83 @@
+
+==============================================================================
+1. Each source table holds one record set per candidate
+==============================================================================
+  adr   48121 rows = 4.010 x 12,000 candidates
+  lic   48124 rows = 4.010 x 12,000 candidates
+  ttl   48108 rows = 4.009 x 12,000 candidates
+  ext   48116 rows = 4.010 x 12,000 candidates
+  wrk   24131 rows = 2.011 x 12,000 candidates
+  up    24000 rows = 2.000 x 12,000 candidates
+
+==============================================================================
+2. The three classes are ordered, not unordered
+==============================================================================
+label_t1               insufficient_evidence  review_not_warranted  review_warranted
+label_t0                                                                            
+insufficient_evidence                     71                    22                12
+review_not_warranted                      20                    85                 0
+review_warranted                          12                     1                77
+
+  Cases never move between the two decided classes in one step: not_warranted->warranted = 0, warranted->not_warranted = 1.
+  Every move passes through insufficient_evidence, which is what an ordered
+  latent score with two thresholds produces.
+
+==============================================================================
+3. Names are corrupted 3-good-plus-1-garbled per record set
+==============================================================================
+  Title rows per vehicle_ref:
+    {4: np.int64(11200), 5: np.int64(102), 8: np.int64(343), 9: np.int64(6)}
+  Largest name cluster inside a 4-row vehicle (n=2892): {2: 15, 3: 2852, 4: 25}
+  -> 98% of vehicles are 3 rows with one owner name + 1 row with an unrelated name.
+
+==============================================================================
+4. The development labels look like a random sample of the 12,000
+==============================================================================
+  KS on the strongest feature, all vs labelled: D=0.0473 p=0.515
+  -> the dev-set class mix (35/35/30) can be used as the population prior.
+
+==============================================================================
+5. Signal by feed (Spearman rho against the ordered T0 label)
+==============================================================================
+  adr: +0.292
+  lic: +0.144
+  ttl: +0.373
+  ext: +0.273
+  wrk: -0.071
+  (title with name-only matching, i.e. ignoring vehicle_ref: +0.249 from 38582 linked rows vs 47581 with the vehicle key)
+  core (adr+lic+ttl+ext pooled): +0.517
+  -> the work-location feed is complete, clean and carries no signal; it is excluded
+     from the pooled score and kept only as its own (near-zero) block.
+
+==============================================================================
+6. Recency matters; how it is weighted matters less
+==============================================================================
+  half-life   60 d: rho=+0.498
+  half-life   90 d: rho=+0.509
+  half-life  150 d: rho=+0.517
+  half-life  240 d: rho=+0.510
+  half-life  365 d: rho=+0.486
+  half-life  730 d: rho=+0.398
+  -> a broad plateau near 90-240 days. 150 days is used.
+
+==============================================================================
+7. The observed tag state adds an independent, smaller term
+==============================================================================
+  recency-weighted DE share alone : +0.517
+  observed tag out of state alone : +0.110
+  sum (0.1 weight on the tag)     : +0.525
+
+==============================================================================
+8. T1 updates move cases in the direction the update points
+==============================================================================
+                                                cases  t1_de_share
+move                                                              
+insufficient_evidence -> insufficient_evidence     71        0.528
+insufficient_evidence -> review_not_warranted      22        0.395
+insufficient_evidence -> review_warranted          12        0.626
+review_not_warranted -> insufficient_evidence      20        0.777
+review_not_warranted -> review_not_warranted       85        0.489
+review_warranted -> insufficient_evidence          12        0.267
+review_warranted -> review_not_warranted            1        0.000
+review_warranted -> review_warranted               77        0.580
+  -> moves up the scale come with DE-leaning updates and vice versa.

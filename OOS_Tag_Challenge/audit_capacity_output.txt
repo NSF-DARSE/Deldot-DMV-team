@@ -1,0 +1,12 @@
+held-out cases: 300   of which review_warranted: 90 (30.0%)
+
+ staff reviews  warranted found   vs random    lift  precision
+   top 5% (15)         12 of 90         4.5   2.67x      80.0%
+  top 10% (30)         23 of 90         9.0   2.56x      76.7%
+  top 20% (60)         37 of 90        18.0   2.06x      61.7%
+  top 30% (90)         50 of 90        27.0   1.85x      55.6%
+ top 40% (120)         65 of 90        36.0   1.81x      54.2%
+ top 50% (150)         72 of 90        45.0   1.60x      48.0%
+
+  half of all warranted cases are found in the top 84 of 300 (28%) of the queue
+  80% of them in the top 149 (50%)
