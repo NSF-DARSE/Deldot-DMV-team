@@ -2,7 +2,6 @@ from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os, io, csv, logging
 from pathlib import Path
 from pydantic import BaseModel
@@ -20,9 +19,15 @@ class BulkTagPayload(BaseModel):
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+mongo_url = os.environ.get('MONGO_URL', 'memory://local')
+if mongo_url.startswith('memory://'):
+    from memory_mongo import MemoryClient, MemoryDB
+    client = MemoryClient()
+    db = MemoryDB()
+else:
+    from motor.motor_asyncio import AsyncIOMotorClient
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ.get('DB_NAME', 'hencheck')]
 
 app = FastAPI(title="DelDOT DMV Casework API")
 api_router = APIRouter(prefix="/api")
