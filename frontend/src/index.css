@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F5F7FA;
+    color: #0F172A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code, .mono {
+    font-family: 'JetBrains Mono', Menlo, monospace;
+}
+
+.font-display {
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+@layer base {
+    :root {
+        --background: 210 40% 98%;
+        --foreground: 222 47% 11%;
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+        --primary: 222 47% 11%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96%;
+        --secondary-foreground: 222 47% 11%;
+        --muted: 210 40% 96%;
+        --muted-foreground: 215 16% 47%;
+        --accent: 214 100% 96%;
+        --accent-foreground: 222 47% 11%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214 32% 88%;
+        --input: 214 32% 88%;
+        --ring: 199 89% 48%;
+        --radius: 0.75rem;
+    }
+}
+
+@layer base {
+    * { @apply border-border; }
+    body { @apply bg-background text-foreground; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* Card surfaces (used across components) */
+.card-surface {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+}
+.card-surface-elevated {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+}
+.hover-elevate {
+    transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.hover-elevate:hover {
+    border-color: #CBD5E1;
+    background: #F8FAFC;
+    box-shadow: 0 4px 12px -4px rgba(15, 23, 42, 0.08);
+}
+.text-muted-strong { color: #64748B; }
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.gauge-fill { transition: width 800ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+.stat-value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.row-hover { transition: background-color 160ms ease-in-out; }
+.row-hover:hover { background-color: #F8FAFC; }
+
+.glow-red { box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2), 0 4px 20px -8px rgba(239, 68, 68, 0.25); }
+.glow-green { box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18), 0 4px 20px -8px rgba(34, 197, 94, 0.22); }
+.glow-amber { box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2), 0 4px 20px -8px rgba(245, 158, 11, 0.22); }
+.glow-blue { box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.2), 0 4px 20px -8px rgba(14, 165, 233, 0.22); }
+
+.grid-backdrop {
+    background-image:
+        linear-gradient(to right, rgba(15,23,42,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15,23,42,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+/* ------------------------------------------------------------------
+   Light-theme overrides for arbitrary dark Tailwind classes used
+   across the app. This lets us flip the theme without rewriting
+   every component's utility classes.
+   ------------------------------------------------------------------ */
+
+/* Background hex overrides — dark tones → light equivalents */
+.bg-\[\#080B10\] { background-color: #F5F7FA !important; }
+.bg-\[\#0B0F16\] { background-color: #FFFFFF !important; }
+.bg-\[\#0B0F16\]\/80 { background-color: rgba(255,255,255,0.85) !important; }
+.bg-\[\#0B0F16\]\/90 { background-color: rgba(255,255,255,0.9) !important; }
+.bg-\[\#0D1117\] { background-color: #F8FAFC !important; }
+.bg-\[\#0F141C\] { background-color: #F8FAFC !important; }
+.bg-\[\#121821\] { background-color: #FFFFFF !important; }
+.bg-\[\#121821\]\/80 { background-color: rgba(255,255,255,0.85) !important; }
+.bg-\[\#141B26\] { background-color: #F1F5F9 !important; }
+.bg-\[\#151B25\] { background-color: #E2E8F0 !important; }
+.bg-\[\#161D27\] { background-color: #FFFFFF !important; }
+.bg-\[\#1B222E\] { background-color: #E2E8F0 !important; }
+.bg-\[\#1E2633\] { background-color: #F1F5F9 !important; }
+.bg-\[\#232C3B\] { background-color: #F1F5F9 !important; }
+
+/* Border hex overrides */
+.border-\[\#1E2633\] { border-color: #E2E8F0 !important; }
+.border-\[\#151B25\] { border-color: #E2E8F0 !important; }
+.border-\[\#232C3B\] { border-color: #CBD5E1 !important; }
+.border-\[\#2E3A4F\] { border-color: #94A3B8 !important; }
+.border-\[\#1B222E\] { border-color: #E2E8F0 !important; }
+
+/* Focus / accent borders */
+.focus\:border-blue-500\/50:focus,
+.focus\:border-cyan-500\/50:focus { border-color: rgba(14, 165, 233, 0.6) !important; }
+
+/* Text color overrides for readability on white */
+.text-white { color: #0F172A !important; }
+.text-slate-100 { color: #0F172A !important; }
+.text-slate-200 { color: #1E293B !important; }
+.text-slate-300 { color: #334155 !important; }
+.text-slate-400 { color: #475569 !important; }
+.text-slate-500 { color: #64748B !important; }
+.text-slate-600 { color: #64748B !important; }
+.text-slate-700 { color: #475569 !important; }
+
+/* Placeholder colors */
+.placeholder\:text-slate-500::placeholder { color: #94A3B8 !important; }
+
+/* Sidebar hover states */
+.hover\:bg-\[\#121821\]:hover { background-color: #F1F5F9 !important; }
+.hover\:bg-\[\#1B222E\]:hover { background-color: #E2E8F0 !important; }
+.hover\:text-white:hover { color: #0F172A !important; }
+
+/* Sidebar active item — restore prominence */
+aside a.bg-\[\#161D27\] {
+    background-color: #F1F5F9 !important;
+    color: #0F172A !important;
+    border-color: #CBD5E1 !important;
+}
+
+/* Active phase / mode buttons keep their brand color */
+.bg-blue-600, .bg-cyan-600 { color: #FFFFFF !important; }
+
+/* Ring / focus overrides that used dark offsets */
+.ring-offset-\[\#161D27\] { --tw-ring-offset-color: #FFFFFF !important; }
+
+/* Amber disclaimer banner — softened for light backgrounds */
+.bg-amber-950\/20 { background-color: #FFFBEB !important; }
+.bg-amber-950\/30 { background-color: #FEF3C7 !important; }
+.border-amber-800\/30 { border-color: #FCD34D !important; }
+.text-amber-200\/80, .text-amber-200\/90 { color: #92400E !important; }
+.text-amber-300 { color: #B45309 !important; }
+.text-amber-400 { color: #D97706 !important; }
+.text-amber-500 { color: #D97706 !important; }
+
+/* Info blue callout softening */
+.bg-blue-950\/20 { background-color: #EFF6FF !important; }
+.bg-blue-950\/30 { background-color: #DBEAFE !important; }
+.border-blue-800\/30 { border-color: #93C5FD !important; }
+.text-blue-200\/80 { color: #1E40AF !important; }
+
+/* Emerald / rose / cyan-500/10 badge backgrounds stay OK on white */
+
+/* Emerald "operational" chip — bump text color for contrast */
+.text-emerald-400 { color: #059669 !important; }
+.text-emerald-300 { color: #047857 !important; }
+.text-red-300 { color: #B91C1C !important; }
+.text-red-400 { color: #DC2626 !important; }
+.text-orange-300 { color: #C2410C !important; }
+.text-cyan-300 { color: #0E7490 !important; }
+.text-cyan-400 { color: #0891B2 !important; }
+.text-blue-300 { color: #1D4ED8 !important; }
+.text-blue-400 { color: #2563EB !important; }
+.text-purple-300 { color: #6D28D9 !important; }
+.text-pink-300 { color: #BE185D !important; }
+
+/* Highlight <mark> for search matches — brighter on white */
+mark.bg-cyan-400\/25 { background-color: #CFFAFE !important; color: #0E7490 !important; }
+
+/* Highlighted evidence card ring uses cyan-500/60 — stays fine */
+
+/* Ensure disabled buttons stay legible */
+button:disabled { opacity: 0.5; }
+
+/* Search bar shadow softened for light bg */
+.shadow-\[0_0_0_1px_rgba\(34\,211\,238\,0\.15\)\,0_10px_40px_-15px_rgba\(34\,211\,238\,0\.25\)\] {
+    box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.2), 0 8px 24px -12px rgba(14, 165, 233, 0.25) !important;
+}

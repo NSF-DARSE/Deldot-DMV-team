@@ -13,14 +13,14 @@ data/audit/*.db-wal
 frontend/node_modules/
 frontend/.next/
 frontend/dist/
+frontend/build/
 frontend/.wrangler/
 frontend/.open-next/
 *.log
 
-# Legacy prototype files retained locally but excluded from the final Codex branch.
-/backend/
+# Legacy prototype paths from earlier branches. backend/ and frontend/
+# are tracked on this combined branch.
 /data/
-/frontend/
 /models/
 /reports/
 /src/

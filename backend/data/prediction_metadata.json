@@ -1,0 +1,6 @@
+{
+  "model_version": "dmv-review-20260818T062015Z-random_forest_sigmoid",
+  "selected_model": "random_forest_sigmoid",
+  "prediction_timestamp": "2026-08-18T06:23:03.197052+00:00",
+  "rows": 24000
+}
