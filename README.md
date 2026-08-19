@@ -20,7 +20,7 @@ Calibrated CatBoost T1 update prediction
 OOF metrics, calibration, priority, and update-stability analysis
 ```
 
-The canonical submission is `outputs/final_metrics_v1/case_predictions.csv`. It contains 24,000 rows: one T0 and one T1 prediction for each of 12,000 candidates.
+The official submission file is `case_predictions.csv` at the repository root. It follows `submission_template.csv`: 24,000 rows, one T0 and one T1 prediction for each of 12,000 candidates, with class probabilities that sum to 1. A copy also lives at `outputs/final_metrics_v1/case_predictions.csv`.
 
 ## Linkage v1.1
 
@@ -103,8 +103,7 @@ Validate:
   tests/test_update_behavior_v1.py \
   tests/test_final_metrics_v1.py
 
-.venv/bin/python scripts/validate_submission.py \
-  outputs/final_metrics_v1/case_predictions.csv
+.venv/bin/python scripts/validate_submission.py case_predictions.csv
 ```
 
 The validated release has 27 passing focused tests.

@@ -456,6 +456,10 @@ def main() -> None:
     )[expected_submission_columns]
     submission_path = args.output_dir / "case_predictions.csv"
     final_submission.to_csv(submission_path, index=False)
+    (ROOT / "case_predictions.csv").write_bytes(submission_path.read_bytes())
+    dashboard_predictions = ROOT / "backend" / "data" / "case_predictions.csv"
+    if dashboard_predictions.parent.exists():
+        dashboard_predictions.write_bytes(submission_path.read_bytes())
     probability_sum_error = float(
         np.abs(combined[PROBABILITY_COLUMNS].sum(axis=1) - 1.0).max()
     )

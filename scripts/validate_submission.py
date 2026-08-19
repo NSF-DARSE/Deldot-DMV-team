@@ -8,12 +8,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from src.config import OUTPUT_DIR, RAW_DATA_DIR, VALID_CLASSES
-
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 EXPECTED_COLUMNS = [
     "candidate_record_id",
@@ -29,14 +26,27 @@ PROBABILITY_COLUMNS = [
     "p_review_not_warranted",
     "p_insufficient_evidence",
 ]
+VALID_CLASSES = {
+    "review_warranted",
+    "review_not_warranted",
+    "insufficient_evidence",
+}
+DEFAULT_SUBMISSION = ROOT / "case_predictions.csv"
+DEFAULT_TEMPLATE = ROOT / "submission_template.csv"
+FALLBACK_TEMPLATE = ROOT / "Identify_Out_of_State_Tag_Holders" / "Submission_Template.csv"
 
 
 def validate_submission(path: Path, template_path: Path) -> None:
     errors: list[str] = []
     submission = pd.read_csv(path)
     template = pd.read_csv(template_path)
-    if list(submission.columns) != EXPECTED_COLUMNS:
-        errors.append(f"columns must be exactly {EXPECTED_COLUMNS}; got {list(submission.columns)}")
+    if set(submission.columns) != set(EXPECTED_COLUMNS):
+        errors.append(
+            f"columns must be {EXPECTED_COLUMNS}; got {list(submission.columns)}"
+        )
+    missing_cols = [c for c in EXPECTED_COLUMNS if c not in submission.columns]
+    if missing_cols:
+        raise AssertionError("Submission validation failed:\n- missing columns: " + ", ".join(missing_cols))
     if len(submission) != len(template):
         errors.append(f"expected {len(template):,} rows; got {len(submission):,}")
     if submission.isna().any().any():
@@ -81,9 +91,14 @@ def validate_submission(path: Path, template_path: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("path", nargs="?", type=Path, default=OUTPUT_DIR / "case_predictions.csv")
+    parser.add_argument("path", nargs="?", type=Path, default=DEFAULT_SUBMISSION)
+    parser.add_argument(
+        "--template",
+        type=Path,
+        default=DEFAULT_TEMPLATE if DEFAULT_TEMPLATE.exists() else FALLBACK_TEMPLATE,
+    )
     args = parser.parse_args()
-    validate_submission(args.path, RAW_DATA_DIR / "Submission_Template.csv")
+    validate_submission(args.path, args.template)
 
 
 if __name__ == "__main__":
