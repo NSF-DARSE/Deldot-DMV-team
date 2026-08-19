@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from scripts.train_t1_model_v1 import build_update_matrix
+from oos_review.scripts.train_t1_model_v1 import build_update_matrix
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,7 +29,7 @@ def test_update_matrix_keeps_priority_for_audit():
 
 
 def test_t1_outputs_are_valid_when_present():
-    output = ROOT / "outputs" / "t1_model_v1"
+    output = ROOT / "data" / "outputs" / "t1_model_v1"
     if not output.exists():
         return
     predictions = pd.read_csv(output / "t1_predictions.csv")

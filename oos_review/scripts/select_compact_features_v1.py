@@ -8,7 +8,26 @@ from pathlib import Path
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parents[1]
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 
 def sha256_file(path: Path) -> str:
@@ -32,13 +51,13 @@ def require_columns(frame: pd.DataFrame, columns: list[str], artifact: str) -> N
 def main() -> None:
     parser = argparse.ArgumentParser(description="Select compact label-free model feature matrices.")
     parser.add_argument(
-        "--feature-dir", type=Path, default=ROOT / "outputs" / "feature_prep_v1"
+        "--feature-dir", type=Path, default=OUTPUTS / "feature_prep_v1"
     )
     parser.add_argument(
-        "--manifest", type=Path, default=ROOT / "configs" / "compact_model_features_v1.json"
+        "--manifest", type=Path, default=CONFIGS / "compact_model_features_v1.json"
     )
     parser.add_argument(
-        "--output-dir", type=Path, default=ROOT / "outputs" / "model_features_v1"
+        "--output-dir", type=Path, default=OUTPUTS / "model_features_v1"
     )
     args = parser.parse_args()
 

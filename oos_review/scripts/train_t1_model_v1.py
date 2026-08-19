@@ -12,9 +12,26 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 from modeling_v1.t0 import (
     apply_temperature,
@@ -104,29 +121,26 @@ def main() -> None:
     parser.add_argument(
         "--training-priors",
         type=Path,
-        default=ROOT / "outputs" / "t0_model_v1" / "t0_training_priors.csv",
+        default=OUTPUTS / "t0_model_v1" / "t0_training_priors.csv",
     )
     parser.add_argument(
         "--inference-priors",
         type=Path,
-        default=ROOT / "outputs" / "t0_model_v1" / "t0_predictions.csv",
+        default=OUTPUTS / "t0_model_v1" / "t0_predictions.csv",
     )
     parser.add_argument(
         "--t0-folds",
         type=Path,
-        default=ROOT / "outputs" / "t0_model_v1" / "t0_outer_fold_assignments.csv",
+        default=OUTPUTS / "t0_model_v1" / "t0_outer_fold_assignments.csv",
     )
     parser.add_argument(
         "--labels",
         type=Path,
-        default=ROOT
-        / "Identify_Out_of_State_Tag_Holders"
-        / "Development_Labels"
-        / "Development_Labels.csv",
+        default=CHALLENGE_DATA / "Development_Labels" / "Development_Labels.csv",
     )
-    parser.add_argument("--config", type=Path, default=ROOT / "configs" / "t1_model_v1.json")
+    parser.add_argument("--config", type=Path, default=CONFIGS / "t1_model_v1.json")
     parser.add_argument(
-        "--output-dir", type=Path, default=ROOT / "outputs" / "t1_model_v1"
+        "--output-dir", type=Path, default=OUTPUTS / "t1_model_v1"
     )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)

@@ -7,31 +7,12 @@ venv/
 .env
 .env.*
 !.env.example
-data/raw/
-data/audit/*.db-shm
-data/audit/*.db-wal
-frontend/node_modules/
-frontend/.next/
-frontend/dist/
-frontend/build/
-frontend/.wrangler/
-frontend/.open-next/
 *.log
+docs/_build/
 
-# Legacy prototype paths from earlier branches. backend/ and frontend/
-# are tracked on this combined branch.
-/data/
-/models/
-/reports/
-/src/
-/outputs/case_predictions.csv
-/outputs/prediction_metadata.json
-/scripts/build_features.py
-/scripts/evaluate_models.py
-/scripts/generate_predictions.py
-/scripts/initialize_audit.py
-/scripts/profile_data.py
-/scripts/train_models.py
-/tests/test_api.py
-/tests/test_explanations.py
-/tests/test_pipeline.py
+oos_review/frontend/node_modules/
+oos_review/frontend/.next/
+oos_review/frontend/dist/
+oos_review/frontend/build/
+oos_review/frontend/.wrangler/
+oos_review/frontend/.open-next/

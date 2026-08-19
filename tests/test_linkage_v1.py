@@ -11,7 +11,7 @@ from linkage_v1.similarity import jaro_winkler
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RULES = json.loads((ROOT / "configs" / "linkage_rules_v1.json").read_text())
+RULES = json.loads((ROOT / "oos_review" / "configs" / "linkage_rules_v1.json").read_text())
 
 
 def candidates() -> pd.DataFrame:

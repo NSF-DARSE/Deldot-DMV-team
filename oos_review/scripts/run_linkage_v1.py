@@ -9,9 +9,26 @@ from pathlib import Path
 import pandas as pd
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 from linkage_v1 import LinkagePipeline
 
@@ -26,9 +43,9 @@ def file_sha256(path: Path) -> str:
 
 def implementation_sha256() -> str:
     digest = hashlib.sha256()
-    paths = sorted((PROJECT_ROOT / "linkage_v1").glob("*.py")) + [Path(__file__).resolve()]
+    paths = sorted((PACKAGE_ROOT / "linkage_v1").glob("*.py")) + [Path(__file__).resolve()]
     for path in paths:
-        digest.update(str(path.relative_to(PROJECT_ROOT)).encode("utf-8"))
+        digest.update(str(path.relative_to(PACKAGE_ROOT)).encode("utf-8"))
         digest.update(b"\0")
         digest.update(path.read_bytes())
         digest.update(b"\0")
@@ -107,15 +124,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run portable frozen linkage v1.")
     parser.add_argument(
         "--data-root", type=Path,
-        default=PROJECT_ROOT / "Identify_Out_of_State_Tag_Holders",
+        default=CHALLENGE_DATA,
     )
     parser.add_argument(
         "--rules", type=Path,
-        default=PROJECT_ROOT / "configs" / "linkage_rules_v1.json",
+        default=CONFIGS / "linkage_rules_v1.json",
     )
     parser.add_argument(
         "--output-dir", type=Path,
-        default=PROJECT_ROOT / "outputs" / "linkage_v1",
+        default=OUTPUTS / "linkage_v1",
     )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)

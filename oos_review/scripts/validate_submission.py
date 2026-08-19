@@ -8,9 +8,26 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 EXPECTED_COLUMNS = [
     "candidate_record_id",
@@ -33,7 +50,7 @@ VALID_CLASSES = {
 }
 DEFAULT_SUBMISSION = ROOT / "case_predictions.csv"
 DEFAULT_TEMPLATE = ROOT / "submission_template.csv"
-FALLBACK_TEMPLATE = ROOT / "Identify_Out_of_State_Tag_Holders" / "Submission_Template.csv"
+FALLBACK_TEMPLATE = CHALLENGE_DATA / "Submission_Template.csv"
 
 
 def validate_submission(path: Path, template_path: Path) -> None:

@@ -1,77 +1,28 @@
-# Delaware DMV Out-of-State Evidence Review Pipeline
+# Case Study: Delaware DMV Out-of-State Tag Holder Review
 
-This repository contains the final reproducible prototype for linking synthetic Delaware DMV evidence, preparing time-aware features, producing calibrated T0/T1 review predictions, and evaluating update behavior.
+## Overview
+Decision-support prototype that links synthetic Delaware DMV evidence, scores whether a case warrants staff review for possible out-of-state registration, and produces T0/T1 class probabilities plus a review priority. It does not determine residency, fees, or enforcement action.
 
-The system is decision support only. It does not determine residency, registration obligations, exemptions, violations, guilt, fees, or enforcement action.
+The official submission file is `case_predictions.csv` at the repository root (24,000 rows: one T0 and one T1 prediction for each of 12,000 candidates).
 
-## Final pipeline
+## Repository Structure
+- `oos_review/` – source code
+- `docs/` – optional documentation (Sphinx scaffold)
+- `data/` – input/output data (if applicable)
 
-```text
-Conservative linkage + freeze
-        ↓
-Temporal feature preparation
-        ↓
-Compact feature contract
-        ↓
-Calibrated CatBoost T0 prediction
-        ↓
-Calibrated CatBoost T1 update prediction
-        ↓
-OOF metrics, calibration, priority, and update-stability analysis
+`oos_review/` contains the linkage, feature, and modeling libraries, pipeline scripts, review API (`backend/`), and Hencheck dashboard (`frontend/`). `data/` holds the challenge package, pipeline outputs, and the pre-bridge baseline snapshot. `case_predictions.csv` is the required challenge submission artifact.
+
+## Documentation
+This repository includes an optional Sphinx documentation scaffold.
+
+Build HTML docs:
+
+```bash
+pip install -r docs/requirements.txt
+sphinx-build -b html docs/source docs/_build/html
 ```
 
-The official submission file is `case_predictions.csv` at the repository root. It follows `submission_template.csv`: 24,000 rows, one T0 and one T1 prediction for each of 12,000 candidates, with class probabilities that sum to 1. A copy also lives at `outputs/final_metrics_v1/case_predictions.csv`.
-
-## Linkage v1.1
-
-Identity linkage is deliberately conservative and portable:
-
-- strong DOB/name and address/name anchors establish verified aliases;
-- unique exact or high-margin fuzzy names may link when unambiguous;
-- ambiguous and contradictory records remain unresolved;
-- row order, class labels, DE/OOS state, and event dates are prohibited identity inputs;
-- names, DOB, and addresses are linkage-only and are not model predictors.
-
-T0 vehicle titles include a narrow `vehicle_ref` bridge. It propagates identity only when all high-confidence anchors agree, no independently linked owner conflicts, and both owner-name components pass strict similarity and runner-up safeguards.
-
-- T0 title linkage: 32,707 → 32,836 rows
-- Coverage: 67.9866% → 68.2548%
-- Recovered rows: 129
-- Internal leave-one-alias-out audit: 2,318/2,318 agreements
-
-The audit is internal consistency evidence, not authoritative linkage truth. Real deployment requires a manually adjudicated linkage sample.
-
-## Modeling and validation
-
-- 300 labeled candidates
-- five candidate-level outer CV folds
-- tuning and early stopping inside training folds
-- scalar temperature calibration from out-of-fold predictions
-- CatBoost selected against a multinomial logistic-regression challenger
-- T1 reuses the exact T0 outer folds and leakage-safe T0 priors
-- experimental T1 anchoring was evaluated but not applied
-
-Current leakage-safe OOF point metrics:
-
-| Phase | Log loss | Macro-F1 | Brier | ECE |
-|---|---:|---:|---:|---:|
-| T0 | 1.034132 | 0.448905 | 0.628625 | 0.060426 |
-| T1 | 1.041262 | 0.448638 | 0.630585 | 0.044436 |
-
-Only 300 synthetic labels are available. These metrics demonstrate the workflow, not expected real DMV performance.
-
-## Repository structure
-
-- `Identify_Out_of_State_Tag_Holders/` — mentor-provided synthetic input package
-- `configs/` — frozen linkage, feature, model, update, and metric definitions
-- `linkage_v1/` — normalization, similarity, and resolver implementation
-- `feature_prep_v1/` — temporal feature builder
-- `modeling_v1/` — shared calibration and model utilities
-- `scripts/` — reproducible pipeline entry points
-- `tests/` — focused linkage, feature, model, update, and final-output tests
-- `outputs/` — reports, feature matrices, models, OOF predictions, and final predictions
-- `baseline_snapshot/` — compact pre-bridge artifacts used for paired comparison
-- `DMV_PIPELINE_HANDOFF.md` — detailed reproduction and handoff notes
+Pipeline handoff notes: `docs/pipeline_handoff.md`.
 
 ## Reproduce
 
@@ -81,33 +32,26 @@ Python 3.11+ is recommended.
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 
-.venv/bin/python scripts/run_linkage_v1.py
-.venv/bin/python scripts/build_temporal_features_v1.py
-.venv/bin/python scripts/select_compact_features_v1.py
-.venv/bin/python scripts/train_t0_model_v1.py
-.venv/bin/python scripts/train_t1_model_v1.py
-.venv/bin/python scripts/analyze_update_behavior_v1.py
-.venv/bin/python scripts/generate_final_metrics_v1.py
-.venv/bin/python scripts/compare_vehicle_bridge_v1.py
+.venv/bin/python oos_review/scripts/run_linkage_v1.py
+.venv/bin/python oos_review/scripts/build_temporal_features_v1.py
+.venv/bin/python oos_review/scripts/select_compact_features_v1.py
+.venv/bin/python oos_review/scripts/train_t0_model_v1.py
+.venv/bin/python oos_review/scripts/train_t1_model_v1.py
+.venv/bin/python oos_review/scripts/analyze_update_behavior_v1.py
+.venv/bin/python oos_review/scripts/generate_final_metrics_v1.py
+.venv/bin/python oos_review/scripts/compare_vehicle_bridge_v1.py
+.venv/bin/python oos_review/scripts/validate_submission.py case_predictions.csv
 ```
-
-Validate:
 
 ```bash
-.venv/bin/python -m pytest -q \
-  tests/test_linkage_v1.py \
-  tests/test_temporal_features_v1.py \
-  tests/test_compact_features_v1.py \
-  tests/test_t0_model_v1.py \
-  tests/test_t1_model_v1.py \
-  tests/test_update_behavior_v1.py \
-  tests/test_final_metrics_v1.py
-
-.venv/bin/python scripts/validate_submission.py case_predictions.csv
+.venv/bin/python -m pytest -q
 ```
 
-The validated release has 27 passing focused tests.
+Dashboard (local):
 
-## Real-data readiness boundary
-
-Before operational use, retrain and recalibrate on authoritative, representative data; manually audit linkage precision and missed links; validate temporal assumptions and exemptions; select review thresholds with DMV stakeholders; and perform subgroup fairness and error analysis. The model must remain human-reviewed decision support.
+```bash
+cd oos_review/backend
+python3 -m uvicorn server:app --host 127.0.0.1 --port 8000
+# in another terminal
+cd oos_review/frontend && yarn start
+```

@@ -13,14 +13,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def builder() -> TemporalFeatureBuilder:
     return TemporalFeatureBuilder(
-        ROOT / "Identify_Out_of_State_Tag_Holders",
-        ROOT / "outputs" / "linkage_v1" / "linked_events.csv",
-        ROOT / "configs" / "temporal_feature_rules_v1.json",
+        ROOT / "data" / "Identify_Out_of_State_Tag_Holders",
+        ROOT / "data" / "outputs" / "linkage_v1" / "linked_events.csv",
+        ROOT / "oos_review" / "configs" / "temporal_feature_rules_v1.json",
     )
 
 
 def test_feature_artifacts_have_one_row_per_candidate_after_build():
-    output = ROOT / "outputs" / "feature_prep_v1"
+    output = ROOT / "data" / "outputs" / "feature_prep_v1"
     if not output.exists():
         return
     t0 = pd.read_csv(output / "features_t0.csv")
@@ -141,7 +141,7 @@ def test_t1_credential_update_without_status_is_not_assumed_active():
 
 
 def test_legal_rules_are_proxies_not_violation_labels():
-    rules = json.loads((ROOT / "configs" / "temporal_feature_rules_v1.json").read_text())
+    rules = json.loads((ROOT / "oos_review" / "configs" / "temporal_feature_rules_v1.json").read_text())
     assert rules["new_resident_vehicle_registration_window_days"] == 60
     assert "not" in rules["residency_proxy_policy"]["legal_status"].lower()
     assert "not" in rules["vehicle_signal_policy"]["legal_status"].lower()

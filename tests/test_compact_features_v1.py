@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_compact_manifest_is_label_free_and_has_no_identity_fields():
-    manifest = json.loads((ROOT / "configs" / "compact_model_features_v1.json").read_text())
+    manifest = json.loads((ROOT / "oos_review" / "configs" / "compact_model_features_v1.json").read_text())
     assert manifest["selection_policy"]["labels_used_to_choose_manifest"] is False
     names = [
         entry["name"]
@@ -27,7 +27,7 @@ def test_compact_manifest_is_label_free_and_has_no_identity_fields():
 
 
 def test_compact_outputs_match_manifest_when_present():
-    output = ROOT / "outputs" / "model_features_v1"
+    output = ROOT / "data" / "outputs" / "model_features_v1"
     if not output.exists():
         return
     manifest = json.loads((output / "compact_model_features_v1.json").read_text())

@@ -9,9 +9,26 @@ import numpy as np
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 from modeling_v1.t0 import metric_bundle
 from scripts.generate_final_metrics_v1 import PROBABILITY_COLUMNS, priority_metrics
@@ -44,13 +61,13 @@ def main() -> None:
     parser.add_argument(
         "--baseline-root",
         type=Path,
-        default=ROOT / "baseline_snapshot",
+        default=BASELINE,
         help="Root containing the compact pre-bridge OOF/linkage snapshot bundled with the final package.",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=ROOT / "outputs" / "vehicle_ref_bridge_comparison_v1",
+        default=OUTPUTS / "vehicle_ref_bridge_comparison_v1",
     )
     parser.add_argument("--bootstrap-resamples", type=int, default=2000)
     parser.add_argument("--seed", type=int, default=20260819)
@@ -75,7 +92,7 @@ def main() -> None:
     for phase in ("T0", "T1"):
         baseline, updated = aligned_predictions(
             args.baseline_root / "outputs" / f"{phase.lower()}_model_v1" / f"{phase.lower()}_oof_predictions.csv",
-            ROOT / "outputs" / f"{phase.lower()}_model_v1" / f"{phase.lower()}_oof_predictions.csv",
+            OUTPUTS / f"{phase.lower()}_model_v1" / f"{phase.lower()}_oof_predictions.csv",
         )
         folds_identical &= baseline[["candidate_record_id", "outer_fold"]].equals(
             updated[["candidate_record_id", "outer_fold"]]
@@ -126,11 +143,11 @@ def main() -> None:
     baseline_linkage = pd.read_csv(
         args.baseline_root / "outputs" / "linkage_v1" / "linkage_summary.csv"
     )
-    updated_linkage = pd.read_csv(ROOT / "outputs" / "linkage_v1" / "linkage_summary.csv")
+    updated_linkage = pd.read_csv(OUTPUTS / "linkage_v1" / "linkage_summary.csv")
     before_title = baseline_linkage.query("phase == 'T0' and source == 'vehicle_title_events'").iloc[0]
     after_title = updated_linkage.query("phase == 'T0' and source == 'vehicle_title_events'").iloc[0]
     linkage_diagnostics = json.loads(
-        (ROOT / "outputs" / "linkage_v1" / "linkage_diagnostics.json").read_text()
+        (OUTPUTS / "linkage_v1" / "linkage_diagnostics.json").read_text()
     )
     bridge = linkage_diagnostics["t0_vehicle_ref_bridge"]
     audit = linkage_diagnostics["vehicle_bridge_holdout_audit"]

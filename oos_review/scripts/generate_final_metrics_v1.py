@@ -21,9 +21,26 @@ from sklearn.metrics import (
 )
 
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 from modeling_v1.t0 import metric_bundle
 
@@ -217,10 +234,10 @@ def feature_contract(
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate final leakage-safe model metrics.")
     parser.add_argument(
-        "--config", type=Path, default=ROOT / "configs" / "final_metrics_v1.json"
+        "--config", type=Path, default=CONFIGS / "final_metrics_v1.json"
     )
     parser.add_argument(
-        "--output-dir", type=Path, default=ROOT / "outputs" / "final_metrics_v1"
+        "--output-dir", type=Path, default=OUTPUTS / "final_metrics_v1"
     )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -229,21 +246,18 @@ def main() -> None:
     class_to_index = {label: index for index, label in enumerate(class_order)}
 
     labels = pd.read_csv(
-        ROOT
-        / "Identify_Out_of_State_Tag_Holders"
-        / "Development_Labels"
-        / "Development_Labels.csv"
+        CHALLENGE_DATA / "Development_Labels" / "Development_Labels.csv"
     ).set_index("candidate_record_id")
     labeled_ids = set(labels.index)
     phase_inputs = {
         "T0": (
-            pd.read_csv(ROOT / "outputs" / "t0_model_v1" / "t0_oof_predictions.csv").set_index(
+            pd.read_csv(OUTPUTS / "t0_model_v1" / "t0_oof_predictions.csv").set_index(
                 "candidate_record_id"
             ),
             "label_t0",
         ),
         "T1": (
-            pd.read_csv(ROOT / "outputs" / "t1_model_v1" / "t1_oof_predictions.csv").set_index(
+            pd.read_csv(OUTPUTS / "t1_model_v1" / "t1_oof_predictions.csv").set_index(
                 "candidate_record_id"
             ),
             "label_t1",
@@ -366,14 +380,14 @@ def main() -> None:
     transitions = pd.DataFrame(transition_rows)
 
     t0_features = pd.read_csv(
-        ROOT / "outputs" / "model_features_v1" / "t0_compact_features.csv"
+        OUTPUTS / "model_features_v1" / "t0_compact_features.csv"
     )
     t1_matrix = pd.read_csv(
-        ROOT / "outputs" / "t1_model_v1" / "t1_inference_update_matrix.csv"
+        OUTPUTS / "t1_model_v1" / "t1_inference_update_matrix.csv"
     )
     t0_predictors = [column for column in t0_features.columns if column != "candidate_record_id"]
     t1_diagnostics = json.loads(
-        (ROOT / "outputs" / "t1_model_v1" / "t1_model_diagnostics.json").read_text()
+        (OUTPUTS / "t1_model_v1" / "t1_model_diagnostics.json").read_text()
     )
     t1_predictors = t1_diagnostics["predictor_names"]
     drift = pd.concat(
@@ -435,7 +449,7 @@ def main() -> None:
     frozen_config.write_bytes(args.config.read_bytes())
 
     combined = pd.read_csv(
-        ROOT / "outputs" / "t1_model_v1" / "case_predictions_t0_t1.csv"
+        OUTPUTS / "t1_model_v1" / "case_predictions_t0_t1.csv"
     )
     expected_submission_columns = [
         "candidate_record_id",
@@ -447,9 +461,7 @@ def main() -> None:
         "review_priority",
     ]
     template = pd.read_csv(
-        ROOT
-        / "Identify_Out_of_State_Tag_Holders"
-        / "Submission_Template.csv"
+        CHALLENGE_DATA / "Submission_Template.csv"
     )[["candidate_record_id", "phase"]]
     final_submission = template.merge(
         combined, on=["candidate_record_id", "phase"], how="left", validate="one_to_one"
@@ -457,7 +469,7 @@ def main() -> None:
     submission_path = args.output_dir / "case_predictions.csv"
     final_submission.to_csv(submission_path, index=False)
     (ROOT / "case_predictions.csv").write_bytes(submission_path.read_bytes())
-    dashboard_predictions = ROOT / "backend" / "data" / "case_predictions.csv"
+    dashboard_predictions = DASHBOARD_DATA / "case_predictions.csv"
     if dashboard_predictions.parent.exists():
         dashboard_predictions.write_bytes(submission_path.read_bytes())
     probability_sum_error = float(

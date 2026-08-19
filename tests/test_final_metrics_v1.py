@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_final_metrics_outputs_when_present():
-    output = ROOT / "outputs" / "final_metrics_v1"
+    output = ROOT / "data" / "outputs" / "final_metrics_v1"
     if not (output / "final_metrics_diagnostics.json").exists():
         return
     diagnostics = json.loads((output / "final_metrics_diagnostics.json").read_text())

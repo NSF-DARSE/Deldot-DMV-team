@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from scripts.analyze_update_behavior_v1 import anchored_probabilities, evidence_groups
+from oos_review.scripts.analyze_update_behavior_v1 import anchored_probabilities, evidence_groups
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,7 +24,7 @@ def test_anchoring_weights_preserve_or_blend_probabilities():
 
 def test_evidence_groups_partition_candidates():
     columns = pd.read_csv(
-        ROOT / "outputs" / "feature_prep_v1" / "features_t1_delta.csv", nrows=0
+        ROOT / "data" / "outputs" / "feature_prep_v1" / "features_t1_delta.csv", nrows=0
     ).columns
     rows = [{column: 0 for column in columns} for _ in range(3)]
     rows[0]["new_t1_oos_count"] = 1
@@ -40,7 +40,7 @@ def test_evidence_groups_partition_candidates():
 
 
 def test_behavior_outputs_retain_current_model_when_present():
-    output = ROOT / "outputs" / "final_metrics_v1"
+    output = ROOT / "data" / "outputs" / "final_metrics_v1"
     if not output.exists():
         return
     diagnostics = json.loads((output / "update_behavior_diagnostics.json").read_text())

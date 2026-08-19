@@ -31,7 +31,7 @@ def test_temperature_fit_is_positive_and_metrics_are_finite():
 
 
 def test_t0_outputs_are_valid_when_present():
-    output = ROOT / "outputs" / "t0_model_v1"
+    output = ROOT / "data" / "outputs" / "t0_model_v1"
     if not output.exists():
         return
     predictions = pd.read_csv(output / "t0_predictions.csv")

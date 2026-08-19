@@ -10,9 +10,26 @@ import numpy as np
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 from modeling_v1.t0 import metric_bundle
 
@@ -132,43 +149,40 @@ def bootstrap_metric_deltas(
 def main() -> None:
     parser = argparse.ArgumentParser(description="Analyze T0-to-T1 update behavior and anchoring.")
     parser.add_argument(
-        "--rules", type=Path, default=ROOT / "configs" / "update_behavior_rules_v1.json"
+        "--rules", type=Path, default=CONFIGS / "update_behavior_rules_v1.json"
     )
     parser.add_argument(
         "--delta",
         type=Path,
-        default=ROOT / "outputs" / "feature_prep_v1" / "features_t1_delta.csv",
+        default=OUTPUTS / "feature_prep_v1" / "features_t1_delta.csv",
     )
     parser.add_argument(
         "--t0-predictions",
         type=Path,
-        default=ROOT / "outputs" / "t0_model_v1" / "t0_predictions.csv",
+        default=OUTPUTS / "t0_model_v1" / "t0_predictions.csv",
     )
     parser.add_argument(
         "--t1-predictions",
         type=Path,
-        default=ROOT / "outputs" / "t1_model_v1" / "t1_predictions.csv",
+        default=OUTPUTS / "t1_model_v1" / "t1_predictions.csv",
     )
     parser.add_argument(
         "--t0-oof",
         type=Path,
-        default=ROOT / "outputs" / "t0_model_v1" / "t0_oof_predictions.csv",
+        default=OUTPUTS / "t0_model_v1" / "t0_oof_predictions.csv",
     )
     parser.add_argument(
         "--t1-oof",
         type=Path,
-        default=ROOT / "outputs" / "t1_model_v1" / "t1_oof_predictions.csv",
+        default=OUTPUTS / "t1_model_v1" / "t1_oof_predictions.csv",
     )
     parser.add_argument(
         "--labels",
         type=Path,
-        default=ROOT
-        / "Identify_Out_of_State_Tag_Holders"
-        / "Development_Labels"
-        / "Development_Labels.csv",
+        default=CHALLENGE_DATA / "Development_Labels" / "Development_Labels.csv",
     )
     parser.add_argument(
-        "--output-dir", type=Path, default=ROOT / "outputs" / "final_metrics_v1"
+        "--output-dir", type=Path, default=OUTPUTS / "final_metrics_v1"
     )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)

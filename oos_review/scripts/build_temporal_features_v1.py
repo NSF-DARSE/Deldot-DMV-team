@@ -9,9 +9,26 @@ from pathlib import Path
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from oos_review.paths import (
+    BASELINE,
+    CHALLENGE_DATA,
+    CONFIGS,
+    DASHBOARD_DATA,
+    OUTPUTS,
+    PACKAGE_ROOT,
+    REPO_ROOT as ROOT,
+    ensure_import_path,
+)
+
+ensure_import_path()
+
 
 from feature_prep_v1 import TemporalFeatureBuilder
 
@@ -26,7 +43,7 @@ def sha256_file(path: Path) -> str:
 
 def implementation_sha256() -> str:
     digest = hashlib.sha256()
-    paths = sorted((ROOT / "feature_prep_v1").glob("*.py")) + [Path(__file__).resolve()]
+    paths = sorted((PACKAGE_ROOT / "feature_prep_v1").glob("*.py")) + [Path(__file__).resolve()]
     for path in paths:
         digest.update(str(path.relative_to(ROOT)).encode())
         digest.update(b"\0")
@@ -136,10 +153,10 @@ def write_dictionary(path: Path, t0: pd.DataFrame, delta: pd.DataFrame, official
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build migration-aware T0/T1 features.")
-    parser.add_argument("--data-root", type=Path, default=ROOT / "Identify_Out_of_State_Tag_Holders")
-    parser.add_argument("--linked-events", type=Path, default=ROOT / "outputs/linkage_v1/linked_events.csv")
-    parser.add_argument("--rules", type=Path, default=ROOT / "configs/temporal_feature_rules_v1.json")
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "outputs/feature_prep_v1")
+    parser.add_argument("--data-root", type=Path, default=CHALLENGE_DATA)
+    parser.add_argument("--linked-events", type=Path, default=OUTPUTS / "linkage_v1" / "linked_events.csv")
+    parser.add_argument("--rules", type=Path, default=CONFIGS / "temporal_feature_rules_v1.json")
+    parser.add_argument("--output-dir", type=Path, default=OUTPUTS / "feature_prep_v1")
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
