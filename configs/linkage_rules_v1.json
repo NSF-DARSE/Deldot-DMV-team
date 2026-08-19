@@ -1,0 +1,61 @@
+{
+  "version": "linkage-v1.1.0",
+  "purpose": "Conservative identity linkage for DMV decision support; optimized for portability and precision rather than synthetic-package accuracy.",
+  "policies": {
+    "use_candidate_or_source_row_order": false,
+    "use_de_or_oos_state_for_identity": false,
+    "use_class_labels_or_model_metrics": false,
+    "use_event_dates_as_identity_evidence": false,
+    "force_ambiguous_matches": false,
+    "learn_aliases_only_from_strong_dob_or_address_anchors": true,
+    "propagate_t0_vehicle_ref_only_from_unanimous_strong_name_anchors": true,
+    "abstain_on_any_independently_linked_vehicle_owner_conflict": true,
+    "treat_link_confidence_as_rule_strength_not_probability": true
+  },
+  "name_weights": {
+    "first": 0.45,
+    "last": 0.55
+  },
+  "thresholds": {
+    "dob_name_combined_min": 0.88,
+    "dob_first_min": 0.75,
+    "dob_last_min": 0.88,
+    "dob_margin_min": 0.05,
+    "unique_dob_name_combined_min": 0.78,
+    "unique_dob_first_min": 0.65,
+    "unique_dob_last_min": 0.75,
+    "address_name_combined_min": 0.78,
+    "address_first_min": 0.65,
+    "address_last_min": 0.75,
+    "ambiguous_address_name_combined_min": 0.90,
+    "ambiguous_address_margin_min": 0.08,
+    "name_only_combined_min": 0.95,
+    "name_only_each_min": 0.90,
+    "name_only_margin_min": 0.06,
+    "vehicle_name_noncontradiction_min": 0.72,
+    "vehicle_bridge_anchor_confidence_min": 0.95,
+    "vehicle_bridge_name_combined_min": 0.90,
+    "vehicle_bridge_name_each_min": 0.90,
+    "vehicle_bridge_name_margin_min": 0.02,
+    "alias_anchor_confidence_min": 0.95,
+    "minimum_fuzzy_name_length": 3
+  },
+  "confidence_scores": {
+    "exact_name_and_dob": 0.995,
+    "fuzzy_name_and_dob": 0.975,
+    "unique_dob_and_acceptable_name": 0.955,
+    "exact_address_and_name": 0.965,
+    "ambiguous_address_resolved_by_name": 0.945,
+    "verified_anchor_alias": 0.955,
+    "unique_exact_full_name": 0.935,
+    "strong_fuzzy_unique_name": 0.885,
+    "known_vehicle_and_name": 0.990,
+    "unanimous_t0_vehicle_ref_and_strong_name": 0.970
+  },
+  "tiers": {
+    "A": "Exact/near-exact DOB-name anchor, verified vehicle continuation, or unanimous T0 vehicle bridge with strong noncontradictory name evidence.",
+    "B": "Exact address-name anchor, verified anchor alias, or unique exact full name.",
+    "C": "Very strong unique fuzzy name with a clear runner-up margin.",
+    "UNRESOLVED": "Missing, contradictory, weak, or ambiguous identity evidence."
+  }
+}

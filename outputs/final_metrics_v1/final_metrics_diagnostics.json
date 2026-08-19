@@ -1,0 +1,63 @@
+{
+  "anchoring_applied": false,
+  "combined_prediction_rows": 24000,
+  "drift_feature_count": 49,
+  "drift_warning_count": 0,
+  "oof_metrics": {
+    "T0": {
+      "accuracy": 0.45,
+      "average_precision_review_warranted": 0.4595840238689402,
+      "brier_macro_ovr": 0.20954154414822046,
+      "brier_multiclass": 0.6286246324446615,
+      "ece_10bin": 0.060425600079978416,
+      "log_loss": 1.0341324240052303,
+      "macro_f1": 0.4489051915116263,
+      "ndcg_review_warranted": 0.8296669278880696,
+      "precision_at_top_10pct": 0.5,
+      "precision_at_top_20pct": 0.5,
+      "recall_at_top_10pct": 0.16666666666666666,
+      "recall_at_top_20pct": 0.3333333333333333
+    },
+    "T1": {
+      "accuracy": 0.45,
+      "average_precision_review_warranted": 0.482781297350716,
+      "brier_macro_ovr": 0.21019489464360736,
+      "brier_multiclass": 0.630584683930822,
+      "ece_10bin": 0.04443573394850863,
+      "log_loss": 1.0412615839867039,
+      "macro_f1": 0.4486381646393838,
+      "ndcg_review_warranted": 0.8171845880178522,
+      "precision_at_top_10pct": 0.6,
+      "precision_at_top_20pct": 0.5166666666666667,
+      "recall_at_top_10pct": 0.20224719101123595,
+      "recall_at_top_20pct": 0.34831460674157305
+    }
+  },
+  "output_sha256": {
+    "case_predictions.csv": "8b3edc6f714d1d5e0dca3da1bf45351aaae33a983197ba0b8f5ee45e9f485419",
+    "final_calibration_bins.csv": "f28f055d6b8d4e772a3c1595cd0b76143222cbc5898d0f431c99e7751c4b4ad3",
+    "final_confusion_matrices.csv": "3c5ec991ab5cd79783a7ba69cafc69ae4884fffe6bd02e33434cdd2d93c94d93",
+    "final_metric_bootstrap_intervals.csv": "8c0def884e001c5577a442844f82ee2edc15b9dcc2e31cfe62b1ab20ba7f1bc7",
+    "final_metrics_v1.json": "638de242a38b1ed72ea02b46b5c96b9d71122b176a0c6e668b7bf6321f47742d",
+    "final_oof_metrics.csv": "ac178ce5ec4c85d5e80a4b3283c3e56cd25cee2b44c73bf2f241d0b0e78a4329",
+    "final_per_class_metrics.csv": "a7ef7f83a6225b05e402832a28e882b21af8fb330d9a803a3c83ea9af77b49b1",
+    "final_transition_matrices.csv": "a96ab7dbff19e52f5bc568d708b3782266a2f6e6f4537ef1c089caec958e05cf",
+    "labeled_unlabeled_feature_drift.csv": "7371579be73f5ddd0b5927ec308b399ec09b04bc49089feb964d2a91144b0253",
+    "real_data_feature_contract.json": "95d09f2f709014207d40f55ec7cd5e23aff879d7b97cb68004917160fab35d35"
+  },
+  "probability_sum_max_error": 4.440892098500626e-16,
+  "release_status": "synthetic_prototype_ready_real_data_validation_required",
+  "transition_metrics": {
+    "actual_class_change_count": 67,
+    "actual_class_change_rate": 0.22333333333333333,
+    "change_detection_f1": 0.31840796019900497,
+    "change_detection_precision": 0.23880597014925373,
+    "change_detection_recall": 0.47761194029850745,
+    "mean_total_variation_probability_change": 0.10966036160041587,
+    "predicted_class_change_count": 134,
+    "predicted_class_change_rate": 0.44666666666666666
+  },
+  "unique_candidate_phase_rows": 24000,
+  "update_behavior_decision": "retain_current_unanchored_t1",
+  "version": "final-metrics-v1.0.0"
+}

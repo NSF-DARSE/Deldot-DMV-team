@@ -1,0 +1,76 @@
+{
+  "version": "compact-model-features-v1.0.0",
+  "selection_method": "label-free domain preselection",
+  "selection_policy": {
+    "labels_used_to_choose_manifest": false,
+    "development_candidate_ids_used_for_unsupervised_sparsity_check": true,
+    "metadata_and_pii_allowed": false,
+    "retain_missing_values_for_catboost": true,
+    "training_fold_only_filters": [
+      "remove a feature if it is constant in that training fold",
+      "fit any later supervised selector only on that training fold",
+      "fit imputation, if ever needed, only on that training fold"
+    ],
+    "t1_prior_policy": "At T1, append calibrated out-of-fold T0 probabilities and T0 review priority during training. Never use in-sample T0 predictions as priors."
+  },
+  "t0_features": [
+    {"name": "linked_record_count", "group": "coverage", "reason": "Overall evidence volume."},
+    {"name": "source_diversity", "group": "coverage", "reason": "Number of independent evidence domains represented."},
+    {"name": "state_missing_ratio", "group": "coverage", "reason": "Evidence completeness without exposing PII."},
+    {"name": "link_confidence_mean", "group": "link_quality", "reason": "Average reliability of frozen linkage decisions."},
+    {"name": "oos_share_known_state", "group": "jurisdiction", "reason": "Balances OOS evidence against DE evidence instead of using OOS count alone."},
+    {"name": "distinct_oos_states", "group": "jurisdiction", "reason": "Separates repeated evidence in one state from multi-state evidence."},
+    {"name": "active_address_oos_count", "group": "current_evidence", "reason": "Current OOS address evidence."},
+    {"name": "active_address_de_count", "group": "current_evidence", "reason": "Current DE address evidence that may counterbalance OOS history."},
+    {"name": "active_oos_credential_count", "group": "current_evidence", "reason": "Explicitly active OOS credential evidence; credential type remains unknown."},
+    {"name": "active_de_credential_count", "group": "current_evidence", "reason": "Explicitly active DE credential evidence."},
+    {"name": "de_count_90d", "group": "recency", "reason": "Recent DE evidence volume."},
+    {"name": "historical_oos_count_over_365d", "group": "recency", "reason": "Separates old residence history from current evidence."},
+    {"name": "days_since_latest_oos", "group": "recency", "reason": "Age of the newest OOS evidence."},
+    {"name": "latest_oos_recency_advantage_days", "group": "migration", "reason": "Direction and size of the recency difference between latest OOS and DE evidence."},
+    {"name": "historical_oos_only", "group": "migration", "reason": "Explicit safeguard for old OOS followed by newer DE evidence."},
+    {"name": "oos_decay_share_365d", "group": "recency", "reason": "Smooth recency-weighted OOS share rather than a hard historical cutoff alone."},
+    {"name": "recent_oos_independent_source_count_90d", "group": "cross_source", "reason": "Recent OOS corroboration across canonical sources."},
+    {"name": "recent_latest_source_oos_count_365d", "group": "cross_source", "reason": "Sources whose latest recent state is OOS."},
+    {"name": "recent_latest_source_de_count_365d", "group": "cross_source", "reason": "Sources whose latest recent state is DE."},
+    {"name": "recent_cross_source_conflict_present_365d", "group": "cross_source", "reason": "Recent DE and OOS sources disagree."},
+    {"name": "de_residency_proxy_present", "group": "grace_window", "reason": "Missingness indicator for the non-authoritative DE address-evidence proxy."},
+    {"name": "days_past_60_day_grace_proxy", "group": "grace_window", "reason": "Encodes the defensible 60-day review window without asserting a violation."},
+    {"name": "post_60d_oos_vehicle_signal_count", "group": "grace_window", "reason": "Post-window OOS title-domain evidence."},
+    {"name": "post_60d_prior_state_persistence_any_present", "group": "migration", "reason": "Old-home-state persistence after the proxy window."}
+  ],
+  "t0_audit_only_review_signals": [
+    {"name": "post_60d_active_oos_credential_signal_count", "group": "grace_window", "reason": "Retained for review, but excluded from modeling because only 8 of 300 development candidates have a nonzero value."},
+    {"name": "post_60d_combined_title_active_credential_conflict_present", "group": "grace_window", "reason": "Retained for review, but excluded from modeling because only 4 of 300 development candidates have a nonzero value."},
+    {"name": "new_meaningful_oos_title_signal_post_60d_present", "group": "event_quality", "reason": "Retained for review, but excluded from modeling because it is constant across the 300 development candidates."}
+  ],
+  "t1_update_features": [
+    {"name": "new_t1_record_count", "group": "update_volume", "reason": "Total new linked evidence in the update stream."},
+    {"name": "new_t1_oos_count", "group": "update_jurisdiction", "reason": "New OOS evidence."},
+    {"name": "new_t1_de_count", "group": "update_jurisdiction", "reason": "New DE evidence."},
+    {"name": "new_t1_state_missing_count", "group": "update_quality", "reason": "New evidence with no usable state."},
+    {"name": "new_t1_source_domain_diversity", "group": "update_cross_source", "reason": "Breadth of new evidence domains."},
+    {"name": "new_t1_new_record_count", "group": "update_action", "reason": "New-record actions are distinguished from corrections and status updates."},
+    {"name": "new_t1_record_correction_count", "group": "update_action", "reason": "Corrections may reverse or weaken earlier evidence."},
+    {"name": "new_t1_status_update_count", "group": "update_action", "reason": "Status changes are distinct from new records."},
+    {"name": "newly_effective_t0_record_count", "group": "update_timing", "reason": "Previously supplied T0 evidence that becomes effective by T1."},
+    {"name": "delta_days_since_latest_oos", "group": "update_recency", "reason": "Change in OOS recency."},
+    {"name": "delta_days_since_latest_de", "group": "update_recency", "reason": "Change in DE recency."},
+    {"name": "delta_oos_decay_90d", "group": "update_recency", "reason": "Change in short-horizon recency-weighted OOS evidence."},
+    {"name": "delta_de_decay_90d", "group": "update_recency", "reason": "Change in short-horizon recency-weighted DE evidence."},
+    {"name": "delta_recent_oos_independent_source_count_90d", "group": "update_cross_source", "reason": "Change in recent OOS source corroboration."},
+    {"name": "delta_recent_de_independent_source_count_90d", "group": "update_cross_source", "reason": "Change in recent DE source corroboration."},
+    {"name": "delta_active_address_oos_count", "group": "update_current_evidence", "reason": "Change in active OOS address evidence."},
+    {"name": "delta_active_address_de_count", "group": "update_current_evidence", "reason": "Change in active DE address evidence."},
+    {"name": "delta_link_confidence_mean", "group": "update_quality", "reason": "Change in average linkage confidence after updates."},
+    {"name": "delta_post_60d_oos_vehicle_signal_count", "group": "update_grace_window", "reason": "Change in post-window OOS title-domain evidence."},
+    {"name": "delta_post_60d_prior_state_persistence_any_present", "group": "update_migration", "reason": "Change in old-home-state persistence."},
+    {"name": "delta_t1_update_observation_lag_mean_days", "group": "update_timing", "reason": "Mean effective-to-observed reporting lag introduced at T1."},
+    {"name": "delta_t1_late_arriving_update_count_over_30d", "group": "update_timing", "reason": "Count of updates arriving more than 30 days after their effective date."}
+  ],
+  "t1_audit_only_review_signals": [
+    {"name": "delta_post_60d_active_oos_credential_signal_count", "group": "update_grace_window", "reason": "Retained for review, but excluded from modeling because only 3 of 300 development candidates have a nonzero change."},
+    {"name": "delta_post_60d_combined_title_active_credential_conflict_present", "group": "update_grace_window", "reason": "Retained for review, but excluded from modeling because only 3 of 300 development candidates have a nonzero change."},
+    {"name": "delta_new_meaningful_oos_title_signal_post_60d_present", "group": "update_event_quality", "reason": "Retained for review, but excluded from modeling because only 6 of 300 development candidates have a nonzero change."}
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "candidate_count": 12000,
+  "feature_rule_version": "temporal-features-v1.1.0",
+  "implementation_sha256": "45867e853376e615ee1504dc79a0f413d9a2c92bb228c479c1cdace0c4360ab4",
+  "known_legal_limitations": [
+    "No authoritative legal-residency start date is supplied.",
+    "No authoritative out-of-state registration-status field is supplied.",
+    "Military and apportioned-vehicle exemption indicators are unavailable.",
+    "Grace-window fields are decision-support proxies, never violation determinations.",
+    "The license/ID source does not identify credential type; credential features are not authoritative driver-license features."
+  ],
+  "output_sha256": {
+    "features_t0.csv": "3f786097f5f23f461bf820dd596390b7cba7488af60a783ab1d4e21f82836261",
+    "features_t1.csv": "95a8b91e1e1c29e2a5062c36b922b62a11984767428b5b9dc5c0e50db2594a3d",
+    "features_t1_delta.csv": "6c6c2a203d1079fed3dad3a7a6b582d626b741d2c8ae42387d3308af4c50e372",
+    "frozen_temporal_feature_rules_v1.json": "f852f130f638b934ee6a8c2c0347750673be1b469f079812d0b7d20b0c3f5fe1",
+    "temporal_feature_dictionary.csv": "ccf9c6ed95a3e3d5fdc2c52e0a53ec3ead8624eb3fb380863134dcd3b4338ee3"
+  },
+  "rules_sha256": "f852f130f638b934ee6a8c2c0347750673be1b469f079812d0b7d20b0c3f5fe1",
+  "t0_candidates_historical_oos_only": 1661,
+  "t0_candidates_past_60_day_proxy_window": 2637,
+  "t0_candidates_with_de_residency_proxy": 5956,
+  "t0_candidates_with_post_60d_active_oos_credential_signal": 443,
+  "t0_candidates_with_post_60d_combined_conflict": 253,
+  "t0_candidates_with_post_60d_oos_vehicle_signal": 994,
+  "t0_candidates_with_post_60d_prior_state_persistence": 761,
+  "t0_candidates_within_60_day_proxy_window": 3319,
+  "t0_feature_column_count": 153,
+  "t0_future_effective_records_excluded": 11671,
+  "t1_as_of_date": "2026-08-11",
+  "t1_candidates_historical_oos_only": 830,
+  "t1_candidates_past_60_day_proxy_window": 3870,
+  "t1_candidates_with_de_residency_proxy": 6052,
+  "t1_candidates_with_linked_updates": 10639,
+  "t1_candidates_with_post_60d_active_oos_credential_signal": 368,
+  "t1_candidates_with_post_60d_combined_conflict": 225,
+  "t1_candidates_with_post_60d_oos_vehicle_signal": 1222,
+  "t1_candidates_with_post_60d_prior_state_persistence": 1112,
+  "t1_candidates_within_60_day_proxy_window": 2182,
+  "t1_delta_column_count": 55,
+  "t1_feature_column_count": 153
+}

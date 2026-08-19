@@ -1,0 +1,4 @@
+evidence_group,labeled_candidates,actual_class_changes,actual_class_change_rate,unanchored_class_changes,unanchored_class_change_rate,experimental_anchored_class_changes,experimental_anchored_class_change_rate
+meaningful_new_evidence,285,66,0.23157894736842105,131,0.45964912280701753,131,0.45964912280701753
+effectively_no_meaningful_update,14,1,0.07142857142857142,3,0.21428571428571427,0,0.0
+weak_minor_update,1,0,0.0,0,0.0,0,0.0

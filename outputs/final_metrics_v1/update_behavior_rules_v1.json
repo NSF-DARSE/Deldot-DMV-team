@@ -1,0 +1,33 @@
+{
+  "version": "update-behavior-v1.0.0",
+  "group_order": [
+    "meaningful_new_evidence",
+    "weak_minor_update",
+    "effectively_no_meaningful_update"
+  ],
+  "meaningful_new_evidence_if_any": [
+    "new_t1_oos_count + new_t1_de_count > 0",
+    "new_t1_source_domain_diversity >= 2",
+    "newly_effective_t0_record_count > 0",
+    "a 60-day grace-state, post-window vehicle/credential, prior-state-persistence, or meaningful-title flag changes"
+  ],
+  "weak_minor_update_definition": "At least one linked T1 record exists, but none of the meaningful-evidence conditions is true.",
+  "effectively_no_meaningful_update_definition": "No linked T1 record, no newly effective T0 record, and no relevant grace-window or persistence-state change. Passive time/decay changes may still exist.",
+  "experimental_anchor": {
+    "meaningful_new_evidence_t1_weight": 1.0,
+    "weak_minor_update_t1_weight": 0.5,
+    "effectively_no_meaningful_update_t1_weight": 0.0,
+    "formula": "p_anchor = weight * p_t1 + (1 - weight) * p_t0"
+  },
+  "clear_improvement_gate": {
+    "minimum_log_loss_reduction": 0.01,
+    "require_brier_not_worse": true,
+    "require_macro_f1_not_worse_by_more_than": 0.01,
+    "minimum_labeled_effectively_no_update_cases": 30
+  },
+  "bootstrap": {
+    "resamples": 2000,
+    "confidence_level": 0.95,
+    "random_seed": 20260819
+  }
+}

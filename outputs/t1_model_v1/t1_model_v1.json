@@ -1,0 +1,51 @@
+{
+  "version": "t1-model-v1.0.0",
+  "random_seed": 20260819,
+  "class_order": [
+    "review_warranted",
+    "review_not_warranted",
+    "insufficient_evidence"
+  ],
+  "inner_cv_folds": 3,
+  "outer_fold_policy": "Reuse the five saved T0 outer folds so every T1 validation candidate receives a T0 prior generated without that candidate.",
+  "t0_prior_predictors": [
+    "p_review_warranted_t0",
+    "p_review_not_warranted_t0",
+    "p_insufficient_evidence_t0"
+  ],
+  "excluded_duplicate_prior": "priority_t0 equals p_review_warranted_t0 and is retained only as audit metadata.",
+  "selection_metric": "calibrated_log_loss",
+  "model_selection_policy": "Choose lower nested-OOF calibrated log loss. If the difference is less than 0.01, prefer multinomial logistic regression unless CatBoost improves macro-F1 by at least 0.02.",
+  "calibration": {
+    "method": "scalar_temperature",
+    "temperature_bounds": [0.25, 5.0]
+  },
+  "review_priority": {
+    "formula": "p_review_warranted",
+    "reason": "Keep T0 and T1 operational ranking transparent and comparable."
+  },
+  "catboost_grid": [
+    {
+      "id": "catboost_depth3",
+      "depth": 3,
+      "learning_rate": 0.03,
+      "l2_leaf_reg": 10.0,
+      "random_strength": 2.0,
+      "iterations": 500,
+      "early_stopping_rounds": 50
+    },
+    {
+      "id": "catboost_depth4",
+      "depth": 4,
+      "learning_rate": 0.03,
+      "l2_leaf_reg": 20.0,
+      "random_strength": 2.0,
+      "iterations": 500,
+      "early_stopping_rounds": 50
+    }
+  ],
+  "logistic_grid": [
+    {"id": "logistic_c_0_1", "C": 0.1},
+    {"id": "logistic_c_1_0", "C": 1.0}
+  ]
+}

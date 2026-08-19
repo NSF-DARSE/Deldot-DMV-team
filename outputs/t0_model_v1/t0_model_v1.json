@@ -1,0 +1,52 @@
+{
+  "version": "t0-model-v1.0.0",
+  "random_seed": 20260819,
+  "class_order": [
+    "review_warranted",
+    "review_not_warranted",
+    "insufficient_evidence"
+  ],
+  "outer_cv_folds": 5,
+  "inner_cv_folds": 3,
+  "selection_metric": "calibrated_log_loss",
+  "model_selection_policy": "Choose lower nested-OOF calibrated log loss. If the difference is less than 0.01, prefer multinomial logistic regression unless CatBoost improves macro-F1 by at least 0.02.",
+  "calibration": {
+    "method": "scalar_temperature",
+    "fit_source": "inner out-of-fold probabilities for each outer fold; nested OOF raw probabilities for final deployment temperature",
+    "temperature_bounds": [0.25, 5.0]
+  },
+  "review_priority": {
+    "formula": "p_review_warranted",
+    "reason": "Transparent portable baseline; do not tune an operational priority formula on only 300 synthetic labels."
+  },
+  "catboost_grid": [
+    {
+      "id": "catboost_depth3",
+      "depth": 3,
+      "learning_rate": 0.03,
+      "l2_leaf_reg": 10.0,
+      "random_strength": 2.0,
+      "iterations": 500,
+      "early_stopping_rounds": 50
+    },
+    {
+      "id": "catboost_depth4",
+      "depth": 4,
+      "learning_rate": 0.03,
+      "l2_leaf_reg": 20.0,
+      "random_strength": 2.0,
+      "iterations": 500,
+      "early_stopping_rounds": 50
+    }
+  ],
+  "logistic_grid": [
+    {"id": "logistic_c_0_1", "C": 0.1},
+    {"id": "logistic_c_1_0", "C": 1.0}
+  ],
+  "official_documentation": [
+    "https://catboost.ai/docs/en/references/training-parameters/common",
+    "https://catboost.ai/docs/en/concepts/parameter-tuning",
+    "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html",
+    "https://scikit-learn.org/stable/modules/calibration.html"
+  ]
+}

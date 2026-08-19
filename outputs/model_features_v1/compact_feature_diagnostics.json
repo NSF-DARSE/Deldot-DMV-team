@@ -1,0 +1,21 @@
+{
+  "candidate_count": 12000,
+  "labels_used_to_choose_manifest": false,
+  "output_sha256": {
+    "compact_feature_dictionary.csv": "74861e97d536a73c8f6f7b699af1e87f6eaa9bcaeab320a8d52a0466caaa7dbb",
+    "compact_model_features_v1.json": "2b4d364d0768fa7d2e723b9efa6052ee46ce52406223a5fe479a944bbb956133",
+    "t0_audit_only_review_signals.csv": "46210be5a7190338662442bd5baf833f0e0e566c715b4f9b7477af5e4273b00c",
+    "t0_compact_features.csv": "4f44f5a7dd7430c4471180a9f33e4dc10bc2fc6c075d00ffc1d28f05f5da61d6",
+    "t1_audit_only_review_signals.csv": "cec1993f18f7314365d9585094408440bfd6ff176bafa26f2d6e649a491a95c7",
+    "t1_compact_update_features.csv": "94070f8d5f91d6fd4450b23fd293905de25b4fb429a0406d5b31806470023a55"
+  },
+  "t0_all_missing_columns": [],
+  "t0_audit_only_review_signal_count": 3,
+  "t0_constant_columns": [],
+  "t0_predictor_count": 24,
+  "t1_all_missing_columns": [],
+  "t1_audit_only_review_signal_count": 3,
+  "t1_constant_columns": [],
+  "t1_update_predictor_count": 22,
+  "version": "compact-model-features-v1.0.0"
+}

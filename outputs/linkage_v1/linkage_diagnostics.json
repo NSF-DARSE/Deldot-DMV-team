@@ -1,0 +1,87 @@
+{
+  "ambiguous_vehicle_ref_count": 687,
+  "ambiguous_verified_alias_count": 245,
+  "anchor_holdout_audit": {
+    "accepted_holdout_rows": 6266,
+    "caveat": "Internal consistency audit only; no authoritative link labels were supplied.",
+    "correct_against_reference": 6266,
+    "coverage_on_reference_holdout": 0.875262,
+    "holdout_rows": 7159,
+    "incorrect_against_reference": 0,
+    "precision_against_reference": 1.0,
+    "reference_definition": "accepted tier-A exact-DOB/name license links",
+    "reference_rows": 34721,
+    "split_definition": "20% holdout by normalized observed-name alias hash"
+  },
+  "candidate_address_key_collisions": 438,
+  "candidate_count": 12000,
+  "candidate_dob_key_collisions": 2082,
+  "candidate_name_key_collisions": 85,
+  "implementation_sha256": "f04c013cb60d9fbc1ba9501d7e3f30f39cb1b34742a8ef74bdf054b3262d8ecd",
+  "link_rule_version": "linkage-v1.1.0",
+  "linked_record_count": 172148,
+  "method_counts": {
+    "ambiguous_vehicle_ownership": 412,
+    "ambiguous_verified_alias": 2770,
+    "exact_name_and_dob": 26937,
+    "exact_unique_address_and_name": 2,
+    "fuzzy_name_and_exact_dob": 6915,
+    "known_vehicle_ref_with_noncontradictory_name": 3224,
+    "no_name_block": 393,
+    "short_name_not_fuzzy_matched": 18401,
+    "strong_fuzzy_name_clear_margin": 15099,
+    "unanimous_t0_vehicle_ref_with_strong_name": 129,
+    "unique_dob_and_acceptable_name": 869,
+    "unique_exact_normalized_full_name": 1787,
+    "vehicle_name_conflict": 41,
+    "vehicle_name_noncontradiction_failed": 941,
+    "verified_dob_or_address_alias": 117186,
+    "weak_or_ambiguous_fuzzy_name": 45494
+  },
+  "output_sha256": {
+    "candidate_linkage_coverage.csv": "7141b1ca19287e1b844b9e5b2936e256f4600755a5016832d4c6d20593d41613",
+    "frozen_linkage_rules_v1.json": "f17367cd773c9e379a8e0ff6236f1e64246c35e9e3640d625fdd44b678264c44",
+    "linkage_method_summary.csv": "a512f81c40a1935d513c5ece62ab017d0d389ebe5a280c6f5a0c720c6fb7b3b7",
+    "linkage_summary.csv": "b82dfb69867b4a4cfbc6bfbd00e560ca550994b5ba8f7522f205b284eb3b3a26",
+    "linked_events.csv": "03fe09f3a11b31f280423313f79da4ef5f7df4991786735aae9caf26db7d553b",
+    "unresolved_or_ambiguous_events.csv": "54b3cdc4976be5db6801a60cdf13572a6d8c743b46279e14229f2b415b225ea3"
+  },
+  "overall_link_rate": 0.715495,
+  "rules_sha256": "f17367cd773c9e379a8e0ff6236f1e64246c35e9e3640d625fdd44b678264c44",
+  "source_record_count": 240600,
+  "t0_vehicle_ref_bridge": {
+    "anchor_definition": "pre-bridge T0 title owner-name links with confidence >= 0.95; vehicle_ref is not used to establish anchors",
+    "identity_inputs_prohibited": [
+      "row_order",
+      "labels",
+      "state",
+      "event_date"
+    ],
+    "identity_inputs_used": [
+      "vehicle_ref",
+      "owner_first_name",
+      "owner_last_name"
+    ],
+    "rows_abstained_by_name_safeguards": 13243,
+    "rows_recovered": 129,
+    "strong_anchor_rows": 28595,
+    "unresolved_rows_on_eligible_vehicle_refs": 13372,
+    "vehicle_refs_eligible_for_bridge": 10481,
+    "vehicle_refs_with_any_linked_owner_conflict": 809,
+    "vehicle_refs_with_conflicting_strong_anchors": 676,
+    "vehicle_refs_with_strong_anchors": 11289
+  },
+  "unresolved_record_count": 68452,
+  "vehicle_bridge_holdout_audit": {
+    "accepted_reference_rows": 2318,
+    "caveat": "Internal consistency audit only; no authoritative vehicle-owner link labels were supplied.",
+    "correct_against_reference": 2318,
+    "incorrect_against_reference": 0,
+    "precision_against_reference": 1.0,
+    "reference_definition": "held-out pre-bridge T0 title links with confidence >= anchor threshold",
+    "split_definition": "leave one normalized owner-name alias out within vehicle_ref",
+    "vehicle_refs_tested": 1130
+  },
+  "vehicle_ref_count": 11416,
+  "verified_alias_count": 18501
+}

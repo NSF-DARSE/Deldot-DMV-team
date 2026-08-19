@@ -1,0 +1,51 @@
+{
+  "candidate_count": 12000,
+  "comparison_metrics": {
+    "catboost": {
+      "accuracy": 0.45,
+      "brier_macro_ovr": 0.20954154414822046,
+      "brier_multiclass": 0.6286246324446615,
+      "ece_10bin": 0.06042560007997841,
+      "log_loss": 1.0341324240052303,
+      "macro_f1": 0.4489051915116263
+    },
+    "logistic": {
+      "accuracy": 0.4633333333333333,
+      "brier_macro_ovr": 0.21319358716628226,
+      "brier_multiclass": 0.6395807614988468,
+      "ece_10bin": 0.058929241013445134,
+      "log_loss": 1.0565305710103372,
+      "macro_f1": 0.46216058894025
+    }
+  },
+  "feature_count": 24,
+  "final_temperature": 0.8698154548690148,
+  "labeled_candidate_count": 300,
+  "oof_training_prior_count": 300,
+  "output_sha256": {
+    "t0_catboost_model.cbm": "b60ea86007b1751128e8f9c8dc97e0177c37276cd32d13c7d139861262ce0189",
+    "t0_feature_importance.csv": "e0d4393b01fcda6661b637d02f3deaec72abdbc91dc4b6a0769a2d9ae130a0e5",
+    "t0_fold_metrics.csv": "71851877d176b7c0dbce517ac19ad919104ec59e9a3a43f30f25a50b332fad5c",
+    "t0_model_comparison.csv": "0726bf1dbdac204694717934ac66dba50ec0e2f63f0a9634c52b8c4194262242",
+    "t0_model_v1.json": "9ef705d713093f59c1ef0f39ca51ef548d86c5d05378b64691a7798488eab4e4",
+    "t0_oof_predictions.csv": "927a66356280e8aab40a746f23b0c3b809c67fe524b30c77aef65c37f8e44c29",
+    "t0_outer_fold_assignments.csv": "571403a3aa3d24c12ef6320750306202fb675cd3e6bc97a21c86e88125f47c06",
+    "t0_predictions.csv": "c6ee3a7cc6b863ec20654334d95574af12033a84b759c44ee62f748eb23bf827",
+    "t0_training_priors.csv": "dab1e1dfe7df80295023398cbdda0db87ce4612aa97e2d887479e14374bcdbe1"
+  },
+  "priority_formula": "p_review_warranted",
+  "probability_sum_max_error": 2.220446049250313e-16,
+  "selected_config": {
+    "depth": 4,
+    "early_stopping_rounds": 50,
+    "id": "catboost_depth4",
+    "iterations": 500,
+    "l2_leaf_reg": 20.0,
+    "learning_rate": 0.03,
+    "random_strength": 2.0
+  },
+  "selected_iterations": 247,
+  "selected_model": "catboost",
+  "selection_reason": "CatBoost improved calibrated log loss by 0.022398.",
+  "version": "t0-model-v1.0.0"
+}

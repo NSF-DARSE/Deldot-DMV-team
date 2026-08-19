@@ -1,0 +1,7 @@
+phase,source,total_records,linked_records,unresolved_records,link_rate,tier_a_records,tier_b_records,tier_c_records,linked_candidate_coverage,mean_link_confidence
+T0,address_history,48121,32747,15374,0.680514,0,29019,3728,11828,0.946765
+T0,license_id_events,48124,35911,12213,0.746218,34721,968,222,11997,0.988401
+T0,external_context_signals,48116,32732,15384,0.680273,0,29049,3683,11832,0.946863
+T0,vehicle_title_events,48108,32707,15401,0.679866,0,29035,3672,11822,0.946872
+T0,work_location_signals,24131,21633,2498,0.896482,0,19201,2432,11683,0.946882
+T1,evidence_update_stream,24000,16289,7711,0.678708,3224,11703,1362,10639,0.955857

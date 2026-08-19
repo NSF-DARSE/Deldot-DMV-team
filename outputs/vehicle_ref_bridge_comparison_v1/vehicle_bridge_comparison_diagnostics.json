@@ -1,0 +1,21 @@
+{
+  "bootstrap_resamples": 2000,
+  "bootstrap_seed": 20260819,
+  "oof_folds_identical": true,
+  "t0_title_link_rate_after": 0.682548,
+  "t0_title_link_rate_before": 0.679866,
+  "t0_title_linked_after": 32836,
+  "t0_title_linked_before": 32707,
+  "t0_title_rows_recovered": 129,
+  "vehicle_bridge_holdout_audit": {
+    "accepted_reference_rows": 2318,
+    "caveat": "Internal consistency audit only; no authoritative vehicle-owner link labels were supplied.",
+    "correct_against_reference": 2318,
+    "incorrect_against_reference": 0,
+    "precision_against_reference": 1.0,
+    "reference_definition": "held-out pre-bridge T0 title links with confidence >= anchor threshold",
+    "split_definition": "leave one normalized owner-name alias out within vehicle_ref",
+    "vehicle_refs_tested": 1130
+  },
+  "version": "vehicle-ref-bridge-comparison-v1.0.0"
+}

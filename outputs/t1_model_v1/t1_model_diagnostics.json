@@ -1,0 +1,79 @@
+{
+  "candidate_count": 12000,
+  "comparison_metrics": {
+    "catboost": {
+      "accuracy": 0.45,
+      "brier_macro_ovr": 0.21019489464360736,
+      "brier_multiclass": 0.630584683930822,
+      "ece_10bin": 0.04443573394850865,
+      "log_loss": 1.0412615839867039,
+      "macro_f1": 0.4486381646393838
+    },
+    "logistic": {
+      "accuracy": 0.4666666666666667,
+      "brier_macro_ovr": 0.21333083463782582,
+      "brier_multiclass": 0.6399925039134774,
+      "ece_10bin": 0.07372819540895449,
+      "log_loss": 1.0582379998375544,
+      "macro_f1": 0.4668811916712932
+    }
+  },
+  "final_temperature": 1.1720373880247126,
+  "labeled_candidate_count": 300,
+  "outer_folds_reused_from_t0": true,
+  "output_sha256": {
+    "case_predictions_t0_t1.csv": "50ecc28d63e34aec63f15be83bcb0dc8a6970fdecf081db47a4446869aa6b199",
+    "t1_catboost_model.cbm": "826b06b02cf8c060102023f262338f09fd580b868932c0a1e98fadc8b58c69d3",
+    "t1_feature_importance.csv": "1f2cb4983945c98fe9d8277fadc5c9f9c6b9955efda958a48839b44a3ccce280",
+    "t1_fold_metrics.csv": "3005ea5a982df7a7d8af8eb13cf7945d9dd5ac6740537e913e037398b805a273",
+    "t1_inference_update_matrix.csv": "5f34ca78c9fbf7cea4bca9714dfd5c4bad12fc460d5c660a8343bef13ee6d38d",
+    "t1_model_comparison.csv": "e9e6545f8f5bf747a15080ad3c04b64cabd61fa19167c2bcd4dadfcfc401f6f2",
+    "t1_model_v1.json": "cd9e17e359d40ab98a489e84ced48182a3e09dc4c0b0d1eae18650385f1dcdc2",
+    "t1_oof_predictions.csv": "618e873c5dbf50a05cf863b61f3f525422012bfbd52d5b16b520c86efe47893e",
+    "t1_predictions.csv": "9d6ebcfc0ff21d1754d3d567d397d7e900850e42954c6ab8f23473ad0225c877",
+    "t1_training_update_matrix.csv": "ce57b65c4b22d8efab3905d9091b665d412a276454b806f9beb7bfcae3172bf7"
+  },
+  "predictor_count": 25,
+  "predictor_names": [
+    "p_review_warranted_t0",
+    "p_review_not_warranted_t0",
+    "p_insufficient_evidence_t0",
+    "new_t1_record_count",
+    "new_t1_oos_count",
+    "new_t1_de_count",
+    "new_t1_state_missing_count",
+    "new_t1_source_domain_diversity",
+    "new_t1_new_record_count",
+    "new_t1_record_correction_count",
+    "new_t1_status_update_count",
+    "newly_effective_t0_record_count",
+    "delta_days_since_latest_oos",
+    "delta_days_since_latest_de",
+    "delta_oos_decay_90d",
+    "delta_de_decay_90d",
+    "delta_recent_oos_independent_source_count_90d",
+    "delta_recent_de_independent_source_count_90d",
+    "delta_active_address_oos_count",
+    "delta_active_address_de_count",
+    "delta_link_confidence_mean",
+    "delta_post_60d_oos_vehicle_signal_count",
+    "delta_post_60d_prior_state_persistence_any_present",
+    "delta_t1_update_observation_lag_mean_days",
+    "delta_t1_late_arriving_update_count_over_30d"
+  ],
+  "priority_t0_excluded_as_duplicate": true,
+  "probability_sum_max_error": 2.220446049250313e-16,
+  "selected_config": {
+    "depth": 3,
+    "early_stopping_rounds": 50,
+    "id": "catboost_depth3",
+    "iterations": 500,
+    "l2_leaf_reg": 10.0,
+    "learning_rate": 0.03,
+    "random_strength": 2.0
+  },
+  "selected_iterations": 283,
+  "selected_model": "catboost",
+  "selection_reason": "CatBoost improved calibrated log loss by 0.016976.",
+  "version": "t1-model-v1.0.0"
+}

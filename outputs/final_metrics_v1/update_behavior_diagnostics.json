@@ -1,0 +1,46 @@
+{
+  "clear_improvement_gate_passed": false,
+  "decision": "retain_current_unanchored_t1",
+  "experimental_anchored_oof_class_change_rate": 0.43666666666666665,
+  "experimental_anchored_oof_metrics": {
+    "accuracy": 0.4533333333333333,
+    "brier_macro_ovr": 0.20908156890609986,
+    "brier_multiclass": 0.6272447067182997,
+    "ece_10bin": 0.022836124907052637,
+    "log_loss": 1.0359887119399158,
+    "macro_f1": 0.45269730650650347
+  },
+  "group_counts": {
+    "effectively_no_meaningful_update": 502,
+    "meaningful_new_evidence": 11447,
+    "weak_minor_update": 51
+  },
+  "labeled_group_counts": {
+    "effectively_no_meaningful_update": 14,
+    "meaningful_new_evidence": 285,
+    "weak_minor_update": 1
+  },
+  "log_loss_reduction": 0.005272872046788057,
+  "output_sha256": {
+    "anchoring_bootstrap_deltas.csv": "9b22359ed6e912a757cb5a4735f92fce71e1829f5ce4540b19072d16a8bf5041",
+    "anchoring_comparison_oof.csv": "a6bf8c9b8a97db0a485e532db504aabfe60ad1f1d5bf75e4b8bb750713f84528",
+    "experimental_anchored_t1_oof_predictions.csv": "2a037f86290a5b9d9a9837946e95830620f8f6b147fa63019e3e64c6a50acc74",
+    "update_behavior_candidates.csv": "1f486fdbb1287a39e25d72bad4277c24377cb7644bfd1f11c99fb8914aa9c033",
+    "update_behavior_labeled_oof_summary.csv": "a09da2a94f8a13bc364c262f4025029297167c8ee65a04617325b208fbefa04c",
+    "update_behavior_rules_v1.json": "847b229c503871685af2438063529d2df1af5b734f595e582c85fb963b0ba5fc",
+    "update_behavior_summary.csv": "34089990d7774e3e01533bab710cbe3cc4cff877cfa760948e59e9f3e80c8d26"
+  },
+  "production_t1_predictions_modified": false,
+  "total_candidate_count": 12000,
+  "total_unanchored_class_changes": 4837,
+  "unanchored_oof_class_change_rate": 0.44666666666666666,
+  "unanchored_oof_metrics": {
+    "accuracy": 0.45,
+    "brier_macro_ovr": 0.21019489464360736,
+    "brier_multiclass": 0.630584683930822,
+    "ece_10bin": 0.04443573394850863,
+    "log_loss": 1.0412615839867039,
+    "macro_f1": 0.4486381646393838
+  },
+  "version": "update-behavior-v1.0.0"
+}

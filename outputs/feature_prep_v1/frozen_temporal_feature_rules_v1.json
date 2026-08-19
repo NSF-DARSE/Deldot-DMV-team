@@ -1,0 +1,45 @@
+{
+  "version": "temporal-features-v1.1.0",
+  "de_state": "DE",
+  "recency_windows_days": [30, 60, 90, 180, 365],
+  "decay_half_lives_days": [90, 365],
+  "low_link_confidence_threshold": 0.93,
+  "new_resident_vehicle_registration_window_days": 60,
+  "phase_as_of_policy": {
+    "T0": "candidate_observed_date",
+    "T1": "maximum observed_date in the complete T1 release batch"
+  },
+  "temporal_policies": {
+    "exclude_event_effective_after_phase_as_of": true,
+    "count_excluded_future_effective_records": true,
+    "gate_t1_records_by_observed_date": true,
+    "preserve_history_but_weight_recent_records_more": true,
+    "hard_override_old_records": false
+  },
+  "residency_proxy_policy": {
+    "sources": ["candidate observed address state", "address history", "T1 address-domain updates"],
+    "definition": "Start of the latest uninterrupted run of dated Delaware address-state evidence, provided the latest address-state evidence is Delaware.",
+    "legal_status": "Operational proxy only; not an authoritative finding that legal residency began on this date."
+  },
+  "vehicle_signal_policy": {
+    "sources": ["vehicle title events", "T1 title-domain updates"],
+    "definition": "Out-of-state vehicle-related state signal; the package contains no authoritative registration-state field.",
+    "legal_status": "Review-window signal only; not a registration violation determination."
+  },
+  "credential_signal_policy": {
+    "sources": ["license_id_events credential_state", "credential_status", "event_date"],
+    "definition": "Out-of-state credential-state signal. Active status is used only when credential_status explicitly equals active.",
+    "limitation": "The package does not identify credential type, so the feature must not be called an authoritative driver-license signal. T1 license-domain updates also lack credential_status and cannot be assumed active.",
+    "legal_status": "Review-window signal only; not a licensing violation determination."
+  },
+  "official_sources": [
+    "https://delcode.delaware.gov/title21/c021/sc01/index.html",
+    "https://dmv.de.gov/VehicleServices/inspections/index.shtml?dc=v_equipment",
+    "https://delcode.delaware.gov/title21/c027/sc01/index.html",
+    "https://dmv.de.gov/DriverServices/drivers_license/index.shtml?dc=dr_lic_gen_req"
+  ],
+  "known_unavailable_exemptions": [
+    "military-member/family exemption status",
+    "International Registration Plan apportioned-unit status"
+  ]
+}
