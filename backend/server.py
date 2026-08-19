@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 import os, io, csv, logging
@@ -513,9 +513,33 @@ async def reload_data():
 
 
 app.include_router(api_router)
-app.add_middleware(CORSMiddleware, allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"], allow_headers=["*"])
+
+FRONTEND_DIR = ROOT_DIR.parent / "frontend" / "build"
+
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """Serve the built React app so Cloud Run can host UI + API on one origin."""
+    if not FRONTEND_DIR.exists():
+        raise HTTPException(404, "Frontend not built")
+    target = (FRONTEND_DIR / full_path).resolve()
+    try:
+        target.relative_to(FRONTEND_DIR.resolve())
+    except ValueError:
+        raise HTTPException(404, "Not found")
+    if full_path and target.is_file():
+        return FileResponse(target)
+    return FileResponse(FRONTEND_DIR / "index.html")
+
+
+cors_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=cors_origins != ["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
